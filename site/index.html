@@ -140,7 +140,7 @@ footer a { color: inherit; }
 <body>
 <main>
   <h1>Points above average</h1>
-  <p class="lede">How many more points a player scores per attempt than the average NBA player. An attempt is a shot, or one trip to the free-throw line. <span id="season-line"></span></p>
+  <p class="lede">How many more points a player scores per game than an average NBA shooter would on the same attempts. An attempt is a shot, or one trip to the free-throw line. <span id="season-line"></span></p>
 
   <div class="tiles" id="tiles"></div>
 
@@ -211,6 +211,7 @@ footer a { color: inherit; }
         </select></label>
         <label>Up <select id="sy">
           <option value="paa_pa">PAA per attempt (vs the league)</option>
+          <option value="paa_pg">PAA per game (vs the league)</option>
           <option value="diff">Versus his teammates</option>
         </select></label>
         <label><input type="checkbox" id="sall"> Everyone (not just 5+ points per team game)</label>
@@ -224,10 +225,11 @@ footer a { color: inherit; }
   <section id="about" role="tabpanel" aria-labelledby="tab-about">
     <div class="card">
       <h2>How it works</h2>
+      <p><b>PAA per game</b>, the leaderboard's main number, is the running total (points − league average × attempts) over the games he played. It rewards volume and efficiency together: a great shooter who shoots a lot piles it up, a star who shoots a lot at a below-average rate goes negative. Last night's <b>PAA</b> is the same number for one game.</p>
       <p><b>PAA per attempt</b> = the player's points per attempt − the league's points per attempt. Positive is better than average. If the league scores 1 point per attempt, a made 2 is +1, and a made 2 followed by a miss is 0.</p>
       <p><b>An attempt</b> is a field-goal attempt or one trip to the free-throw line: two or three free throws in a trip count as one attempt, so 2 of 2 from the line is worth the same as a made 2. An and-one is one attempt (the free throw adds a point to the shot). Technical and flagrant free throws are left out, points included. Turnovers don't count.</p>
       <p><b>The league average</b> is every player's points over every player's attempts this season, counted the same way. Last night's numbers use the average through that night, so they don't change later.</p>
-      <p><b>Total PAA</b> in the leaderboard is the running total: points − league average × attempts. It rewards volume: a great shooter who shoots a lot piles it up.</p>
+      <p><b>Total PAA</b> is that running total for the whole season.</p>
       <p><b>Who's on the boards</b>: players with at least 5 points per team game, his season points over the games his team has played. A good bench player qualifies, and a player who stops playing drops off: 45 points in game 1 stays on for 9 team games.</p>
       <p><b>Versus teammates</b> compares a player with the rest of his team in the games he played, so a player on a bad shooting team doesn't get punished for his teammates, and vice versa. Traded players get one row per team.</p>
       <p class="note" id="check-line"></p>
@@ -247,6 +249,7 @@ const BBREF = "https://www.basketball-reference.com/players/";
 const fmt = {
   signed: (v) => signedFixed(v, 3),
   signed1: (v) => signedFixed(v, 1),
+  signed2: (v) => signedFixed(v, 2),
   three: (v) => v.toFixed(3),
   one: (v) => v.toFixed(1),
   int: (v) => String(Math.round(v)),
@@ -318,9 +321,9 @@ function sync(container, state, key) {
   container.querySelectorAll("button").forEach((x) =>
     x.setAttribute("aria-pressed", String(state.key === key && x.dataset.order === state.dir)));
 }
-function ranked(rows, key) {
-  // Equal values as shown (to 3 decimals) share a rank: 1, 2, 2, 4...
-  const shown = (r) => fmt.signed(r[key]);
+function ranked(rows, key, format = fmt.signed) {
+  // Equal values as shown share a rank: 1, 2, 2, 4...
+  const shown = (r) => format(r[key]);
   rows.slice().sort((a, b) => b[key] - a[key]).forEach((r, i, sorted) => {
     r.rank = i > 0 && shown(sorted[i - 1]) === shown(r) ? sorted[i - 1].rank : i + 1;
   });
@@ -368,7 +371,7 @@ function renderHeader(d) {
   $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
   $("tiles").innerHTML = [
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
-    ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pa)}">${fmt.signed(leader.paa_pa)}</span><div class="note">${leader.pts} points in ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
+    ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pg)}">${fmt.signed2(leader.paa_pg)}</span><div class="note">a game (${fmt.signed(leader.paa_pa)} per attempt), ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
     [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa_pa)}">${fmt.signed(night.paa_pa)}</span><div class="note">${night.pts} points on ${plural(night.att, "attempt")}</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
   const latest = new Date(d.last_night + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
@@ -385,9 +388,10 @@ function renderHeader(d) {
 function renderLeaders(d) {
   $("leaders-note").textContent = `Players with at least ${d.min_pts_per_team_game} points per team game (his points over his team's games this season). Click a column to sort.`;
   const search = $("leaders-search");
-  const qualified = ranked(d.players.filter((r) => r.qualified), "paa_pa");
+  const qualified = ranked(d.players.filter((r) => r.qualified), "paa_pg", fmt.signed2);
   const state = sortable("leaders-table", [
     { label: "Player", left: true, cell: playerLink, sort: "name" },
+    { label: "PAA / g", sort: "paa_pg", cell: (r) => `<span class="${cls(r.paa_pg)}">${fmt.signed2(r.paa_pg)}</span>`, title: "Points above average per game: his total PAA over the games he played" },
     { label: "PAA / att", sort: "paa_pa", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>`, title: "Points per attempt minus the league's" },
     { label: "Pts / att", sort: "ppa", cell: (r) => fmt.three(r.ppa) },
     { label: "Total PAA", sort: "paa", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points minus league average × attempts" },
@@ -395,10 +399,10 @@ function renderLeaders(d) {
     { label: "Att / g", sort: "apg", cell: (r) => fmt.one(r.apg) },
     { label: "Games", sort: "gp", cell: (r) => `${r.gp} <span class="team">of ${r.team_gp}</span>`, title: "Games he played, of his team's games" },
   ], () => qualified.filter((r) => matches(r, norm(search.value.trim()))),
-  { key: "paa_pa", dir: "desc", page: 25, more: "leaders-more", rankLabel: "PAA per attempt",
-    onSort: () => sync(document.querySelector("#leaders .seg"), state, "paa_pa") });
+  { key: "paa_pg", dir: "desc", page: 25, more: "leaders-more", rankLabel: "PAA per game",
+    onSort: () => sync(document.querySelector("#leaders .seg"), state, "paa_pg") });
   search.addEventListener("input", state.render);
-  segmented(document.querySelector("#leaders .seg"), state, "paa_pa");
+  segmented(document.querySelector("#leaders .seg"), state, "paa_pg");
   state.render();
 }
 
@@ -428,14 +432,15 @@ function renderNights(d) {
   select.innerHTML = dates.map((x) => `<option value="${x}">${label(x)}</option>`).join("");
   const cols = [
     { label: "Player", left: true, cell: (r) => `${playerLink(r)}<span class="team">vs ${esc(r.opp)}</span>` },
-    { label: "PAA / att", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>` },
+    { label: "PAA", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points above average in the game" },
+    { label: "PAA / att", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>`, title: "Points per attempt minus the league's" },
     { label: "Pts", cell: (r) => r.pts },
     { label: "Att", cell: (r) => r.att },
   ];
   function table(id, rows) {
-    $(id).innerHTML = `<thead><tr><th class="l">#</th>${cols.map((c) => `<th class="${c.left ? "l" : ""}">${c.label}</th>`).join("")}</tr></thead><tbody>` +
+    $(id).innerHTML = `<thead><tr><th class="l">#</th>${cols.map((c) => `<th class="${c.left ? "l" : ""}"${c.title ? ` title="${esc(c.title)}"` : ""}>${c.label}</th>`).join("")}</tr></thead><tbody>` +
       (rows.length ? rows.map((r, i) => `<tr><td class="rank l">${i + 1}</td>${cols.map((c) => `<td class="${c.left ? "l" : ""}">${c.cell(r)}</td>`).join("")}</tr>`).join("")
-        : `<tr><td colspan="5" class="empty l">Nobody.</td></tr>`) + "</tbody>";
+        : `<tr><td colspan="${cols.length + 1}" class="empty l">Nobody.</td></tr>`) + "</tbody>";
   }
   function show() {
     const date = select.value;
@@ -462,6 +467,7 @@ const AXES = {
   apg: { label: "Attempts per game", fmt: fmt.one },
   ppg: { label: "Points per game", fmt: fmt.one },
   paa_pa: { label: "PAA per attempt", fmt: fmt.signed },
+  paa_pg: { label: "PAA per game", fmt: fmt.signed2 },
   diff: { label: "Versus teammates", fmt: fmt.signed },
 };
 
@@ -490,7 +496,7 @@ function scatterRows() {
     return DATA.teammates.filter((r) => all || r.qualified).map((r) => ({
       ...r, x: xk === "ppg" ? r.ppg : r.att / r.gp, y: r.diff, key: r.id + r.team }));
   }
-  return DATA.players.filter((r) => all || r.qualified).map((r) => ({ ...r, x: r[xk], y: r.paa_pa, key: r.id }));
+  return DATA.players.filter((r) => all || r.qualified).map((r) => ({ ...r, x: r[xk], y: r[yk], key: r.id }));
 }
 
 function drawScatter() {
@@ -554,7 +560,7 @@ function drawScatter() {
     if (!r) return;
     tip.innerHTML = `<b>${esc(r.name)} <span>${esc(r.team)}</span></b>` +
       `${AXES[yk].label}: <b style="display:inline" class="${cls(r.y)}">${AXES[yk].fmt(r.y)}</b><br>` +
-      `<span>${AXES[xk].label}: ${AXES[xk].fmt(r.x)} · ${fmt.three(r.ppa)} pts/att · ${plural(r.gp, "game")}</span>`;
+      `<span>${AXES[xk].label}: ${AXES[xk].fmt(r.x)} · ${yk === "paa_pg" ? `${fmt.signed(r.paa_pa)} PAA/att` : `${fmt.three(r.ppa)} pts/att`} · ${plural(r.gp, "game")}</span>`;
     tip.style.display = "block";
     const scale = svg.getBoundingClientRect().width / width;
     const cx = +circle.getAttribute("cx") * scale, cy = +circle.getAttribute("cy") * scale;
