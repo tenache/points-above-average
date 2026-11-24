@@ -108,8 +108,9 @@ td a:hover { text-decoration: underline; }
 .neg { color: var(--below-text); font-weight: 600; }
 tr.hl td { background: var(--wash); }
 .more { margin-top: 10px; font: inherit; font-size: 14px; background: none; border: 0; color: var(--above-text); cursor: pointer; padding: 4px 0; }
-.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-@media (max-width: 720px) { .two { grid-template-columns: 1fr; } }
+.two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
+.two > div, .card, main { min-width: 0; }
+@media (max-width: 720px) { .two { grid-template-columns: minmax(0, 1fr); } }
 .chart-wrap { position: relative; }
 svg { display: block; width: 100%; height: auto; overflow: visible; }
 svg text { fill: var(--muted); font-size: 11px; font-family: inherit; }
@@ -324,7 +325,7 @@ function renderHeader(d) {
   const night = d.last_night && d.nights[d.last_night].rows[0];
   $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
   $("tiles").innerHTML = [
-    ["League average", `${fmt.three(d.league_ppa)} <span class="note">points per attempt</span>`],
+    ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
     ["Top of the league", leader ? `${esc(leader.name)} <span class="pos">${fmt.signed(leader.paa_pa)}</span>` : "—"],
     ["Best last night", night ? `${esc(night.name)} <span class="pos">${fmt.signed(night.paa_pa)}</span>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
@@ -442,10 +443,12 @@ function drawScatter() {
   const svg = $("chart"), tip = $("tip"), wrap = $("chart-wrap");
   const xk = $("sx").value, yk = $("sy").value;
   const rows = scatterRows();
-  const width = Math.max(320, wrap.clientWidth), height = Math.round(Math.min(520, Math.max(300, width * 0.62)));
-  const m = { l: 52, r: 12, t: 12, b: 40 };
+  const width = Math.max(280, wrap.clientWidth);
+  const narrow = width < 500;
+  const height = Math.round(narrow ? width * 1.15 : Math.min(520, Math.max(340, width * 0.62)));
+  const m = { l: 66, r: 12, t: 16, b: 40 };
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
-  $("scatter-title").textContent = `${AXES[xk].label} against ${AXES[yk].label.toLowerCase()}`;
+  $("scatter-title").textContent = `${AXES[xk].label} against ${AXES[yk].label}`;
   if (!rows.length) { svg.innerHTML = ""; return; }
   const xs = rows.map((r) => r.x), ys = rows.map((r) => r.y);
   const x0 = 0, x1 = Math.max(...xs) * 1.04;
@@ -462,7 +465,7 @@ function drawScatter() {
     parts.push(`<text x="${X(t)}" y="${height - m.b + 16}" text-anchor="middle">${fmt.int(t)}</text>`);
   }
   parts.push(`<line class="zero" x1="${m.l}" x2="${width - m.r}" y1="${Y(0)}" y2="${Y(0)}"/>`);
-  parts.push(`<text x="${width - m.r}" y="${Y(0) - 6}" text-anchor="end">${yk === "diff" ? "same as teammates" : "league average"}</text>`);
+  parts.push(`<text x="${m.l + 6}" y="${Y(0) - 6}">${yk === "diff" ? "same as teammates" : "league average"}</text>`);
   parts.push(`<text x="${(m.l + width - m.r) / 2}" y="${height - 4}" text-anchor="middle">${AXES[xk].label}</text>`);
   parts.push(`<text transform="translate(12 ${(m.t + height - m.b) / 2}) rotate(-90)" text-anchor="middle">${AXES[yk].label}</text>`);
   const q = norm($("ssearch").value.trim());
@@ -470,13 +473,18 @@ function drawScatter() {
   const order = rows.slice().sort((a, b) => Math.abs(a.y) - Math.abs(b.y));
   for (const r of order) {
     const dim = q && !found.includes(r);
-    parts.push(`<circle class="dot${dim ? " dim" : ""}${picked === r.key ? " picked" : ""}" data-key="${esc(r.key)}" cx="${X(r.x).toFixed(1)}" cy="${Y(r.y).toFixed(1)}" r="5" fill="var(${r.y >= 0 ? "--above" : "--below"})"/>`);
+    parts.push(`<circle class="dot${dim ? " dim" : ""}${picked === r.key ? " picked" : ""}" data-key="${esc(r.key)}" cx="${X(r.x).toFixed(1)}" cy="${Y(r.y).toFixed(1)}" r="${narrow ? 4 : 5}" fill="var(${r.y >= 0 ? "--above" : "--below"})"/>`);
   }
   // Label the extremes (top 3 and bottom 2) and anyone searched for, never every dot.
   const byY = rows.slice().sort((a, b) => b.y - a.y);
   const labelled = new Set((found.length && found.length <= 8 ? found : [...byY.slice(0, 3), ...byY.slice(-2)]));
+  // Skip a label that would overlap one already placed (rough box: 7 px per character).
+  const boxes = [];
   for (const r of labelled) {
     const left = X(r.x) > width * 0.75;
+    const w = r.name.length * 7, x = left ? X(r.x) - 8 - w : X(r.x) + 8, y = Y(r.y) - 8;
+    if (boxes.some((b) => x < b.x + b.w && b.x < x + w && y < b.y + 16 && b.y < y + 16)) continue;
+    boxes.push({ x, y, w });
     parts.push(`<text class="label" x="${X(r.x) + (left ? -8 : 8)}" y="${Y(r.y) + 4}" text-anchor="${left ? "end" : "start"}">${esc(r.name)}</text>`);
   }
   svg.innerHTML = parts.join("");
