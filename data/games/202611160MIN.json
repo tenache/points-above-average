@@ -46,18 +46,18 @@
    "trips": 0
   },
   "camarto01": {
-   "att": 10,
+   "att": 11,
    "fga": 10,
    "fgm2": 1,
    "fgm3": 0,
-   "fta": 0,
-   "ftm": 0,
+   "fta": 1,
+   "ftm": 1,
    "name": "T. Camara",
-   "other_fta": 1,
-   "other_ftm": 1,
-   "pts": 2,
+   "other_fta": 0,
+   "other_ftm": 0,
+   "pts": 3,
    "team": "POR",
-   "trips": 0
+   "trips": 1
   },
   "carlsbr01": {
    "att": 3,

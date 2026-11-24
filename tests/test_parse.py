@@ -104,6 +104,41 @@ def test_and_one_check_looks_at_the_period_too():
     assert (p["att"], p["other_fta"]) == (1, 1)
 
 
+def test_a_foul_drawn_after_a_turnover_is_not_an_and_one():
+    p = counts([
+        (1, "4:17.0", "away", f"{player(A)} makes 2-pt layup at rim"),
+        (1, "4:00.0", "home", f"Turnover by {player(H)} (bad pass)"),
+        (1, "3:43.0", "away", f"Personal foul by {player(H)} (drawn by {player(A)})"),
+        (1, "3:43.0", "away", f"{player(A)} makes free throw 1 of 1"),
+    ])[A]
+    assert (p["att"], p["other_ftm"]) == (1, 1)
+
+
+def test_lone_free_throw_after_a_loose_ball_foul_is_his_own():
+    p = counts([
+        (1, "6:00.0", "away", f"{player(B)} makes 2-pt layup at rim"),
+        (1, "6:00.0", "home", f"Loose ball foul by {player(H)} (drawn by {player(A)})"),
+        (1, "6:00.0", "away", f"{player(A)} makes free throw 1 of 1"),
+    ])[A]
+    assert (p["pts"], p["att"], p["trips"], p["other_fta"]) == (1, 1, 1, 0)
+
+
+def test_an_ejection_is_not_a_game_played():
+    p = counts([
+        (1, "4:00.0", "away", f"{player(A)} misses 2-pt layup at rim"),
+        (2, "6:00.0", "home", f"{player(H)} ejected from game"),
+    ])
+    assert H not in p
+
+
+def test_plays_must_add_up_to_the_final_score():
+    page = pbp_page([(1, "11:00.0", "away", f"{player(A)} makes 2-pt jump shot from 8 ft")])
+    good = page.replace('</div>', '<div class="score">2</div><div class="score">0</div></div>', 1)
+    assert parse.game(good, "202611220HHH")["players"][A]["pts"] == 2
+    with pytest.raises(ValueError, match="final score"):
+        parse.game(page.replace('</div>', '<div class="score">4</div><div class="score">0</div></div>', 1), "202611220HHH")
+
+
 def test_technical_and_flagrant_free_throws_are_left_out():
     p = counts([
         (1, "8:00.0", "home", f"{player(H)} makes technical free throw"),
