@@ -242,18 +242,18 @@
    "trips": 0
   },
   "sabondo01": {
-   "att": 17,
+   "att": 16,
    "fga": 13,
    "fgm2": 9,
    "fgm3": 1,
-   "fta": 7,
-   "ftm": 6,
+   "fta": 6,
+   "ftm": 5,
    "name": "D. Sabonis",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 27,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 26,
    "team": "SAC",
-   "trips": 4
+   "trips": 3
   },
   "sharpem01": {
    "att": 5,

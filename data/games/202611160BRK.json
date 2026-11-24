@@ -60,18 +60,18 @@
    "trips": 1
   },
   "demineg01": {
-   "att": 12,
+   "att": 11,
    "fga": 10,
    "fgm2": 1,
    "fgm3": 2,
-   "fta": 3,
-   "ftm": 1,
+   "fta": 2,
+   "ftm": 0,
    "name": "E. Dëmin",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 9,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 8,
    "team": "BRK",
-   "trips": 2
+   "trips": 1
   },
   "edgecvj01": {
    "att": 13,

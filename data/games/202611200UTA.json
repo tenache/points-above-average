@@ -88,18 +88,18 @@
    "trips": 0
   },
   "georgke01": {
-   "att": 21,
+   "att": 20,
    "fga": 17,
    "fgm2": 4,
    "fgm3": 0,
-   "fta": 7,
+   "fta": 6,
    "ftm": 6,
    "name": "K. George",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 14,
    "team": "UTA",
-   "trips": 4
+   "trips": 3
   },
   "gilleco01": {
    "att": 12,

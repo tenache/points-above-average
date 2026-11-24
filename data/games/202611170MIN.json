@@ -74,18 +74,18 @@
    "trips": 0
   },
   "clingdo01": {
-   "att": 16,
+   "att": 15,
    "fga": 14,
    "fgm2": 6,
    "fgm3": 0,
-   "fta": 3,
+   "fta": 2,
    "ftm": 0,
    "name": "D. Clingan",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 12,
    "team": "POR",
-   "trips": 2
+   "trips": 1
   },
   "dosunay01": {
    "att": 20,

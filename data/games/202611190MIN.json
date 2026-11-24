@@ -256,18 +256,18 @@
    "trips": 1
   },
   "townska01": {
-   "att": 21,
+   "att": 20,
    "fga": 20,
    "fgm2": 7,
    "fgm3": 2,
-   "fta": 2,
-   "ftm": 2,
+   "fta": 1,
+   "ftm": 1,
    "name": "K. Towns",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 22,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 21,
    "team": "NYK",
-   "trips": 1
+   "trips": 0
   }
  },
  "unparsed": []

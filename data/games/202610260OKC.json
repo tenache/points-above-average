@@ -18,18 +18,18 @@
    "trips": 0
   },
   "bookede01": {
-   "att": 8,
+   "att": 7,
    "fga": 7,
    "fgm2": 1,
    "fgm3": 0,
-   "fta": 1,
-   "ftm": 1,
+   "fta": 0,
+   "ftm": 0,
    "name": "D. Booker",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 3,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 2,
    "team": "PHO",
-   "trips": 1
+   "trips": 0
   },
   "bouyeja01": {
    "att": 1,

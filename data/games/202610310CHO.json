@@ -270,18 +270,18 @@
    "trips": 0
   },
   "walkeja01": {
-   "att": 9,
+   "att": 8,
    "fga": 8,
    "fgm2": 4,
    "fgm3": 1,
-   "fta": 1,
-   "ftm": 1,
+   "fta": 0,
+   "ftm": 0,
    "name": "J. Walker",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 12,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 11,
    "team": "PHI",
-   "trips": 1
+   "trips": 0
   }
  },
  "unparsed": []

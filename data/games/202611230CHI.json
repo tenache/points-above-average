@@ -130,18 +130,18 @@
    "trips": 0
   },
   "hieldbu01": {
-   "att": 16,
+   "att": 15,
    "fga": 15,
    "fgm2": 2,
    "fgm3": 4,
-   "fta": 1,
-   "ftm": 1,
+   "fta": 0,
+   "ftm": 0,
    "name": "B. Hield",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 17,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 16,
    "team": "CHI",
-   "trips": 1
+   "trips": 0
   },
   "jonestr01": {
    "att": 16,

@@ -32,18 +32,18 @@
    "trips": 0
   },
   "brunsja01": {
-   "att": 21,
+   "att": 20,
    "fga": 18,
    "fgm2": 7,
    "fgm3": 1,
-   "fta": 6,
+   "fta": 5,
    "ftm": 4,
    "name": "J. Brunson",
-   "other_fta": 1,
+   "other_fta": 2,
    "other_ftm": 1,
    "pts": 21,
    "team": "NYK",
-   "trips": 3
+   "trips": 2
   },
   "dadiepa01": {
    "att": 5,

@@ -144,18 +144,18 @@
    "trips": 1
   },
   "jeromty01": {
-   "att": 16,
+   "att": 15,
    "fga": 14,
    "fgm2": 5,
    "fgm3": 2,
-   "fta": 4,
-   "ftm": 4,
+   "fta": 3,
+   "ftm": 3,
    "name": "T. Jerome",
-   "other_fta": 1,
-   "other_ftm": 1,
-   "pts": 20,
+   "other_fta": 2,
+   "other_ftm": 2,
+   "pts": 19,
    "team": "MEM",
-   "trips": 2
+   "trips": 1
   },
   "lopezka01": {
    "att": 1,

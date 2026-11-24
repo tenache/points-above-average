@@ -74,18 +74,18 @@
    "trips": 1
   },
   "clingdo01": {
-   "att": 10,
+   "att": 9,
    "fga": 9,
    "fgm2": 4,
    "fgm3": 1,
-   "fta": 1,
+   "fta": 0,
    "ftm": 0,
    "name": "D. Clingan",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 11,
    "team": "POR",
-   "trips": 1
+   "trips": 0
   },
   "cowarce01": {
    "att": 14,
@@ -214,18 +214,18 @@
    "trips": 1
   },
   "lillada01": {
-   "att": 15,
+   "att": 14,
    "fga": 13,
    "fgm2": 2,
    "fgm3": 1,
-   "fta": 3,
+   "fta": 2,
    "ftm": 2,
    "name": "D. Lillard",
-   "other_fta": 1,
+   "other_fta": 2,
    "other_ftm": 0,
    "pts": 9,
    "team": "POR",
-   "trips": 2
+   "trips": 1
   },
   "lopezka01": {
    "att": 1,

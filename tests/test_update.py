@@ -1,6 +1,7 @@
 import json
 
 import pytest
+import requests
 
 from paa import fetch, update
 from tests.pages import pbp_page, player, totals_page
@@ -15,7 +16,12 @@ class FakeFetcher:
 
     def get(self, path, use_cache=True):
         self.requests_made += 1
-        return self.pages[path]
+        page = self.pages[path]
+        if isinstance(page, int):
+            response = requests.Response()
+            response.status_code = page
+            raise requests.HTTPError(f"{page}", response=response)
+        return page
 
 
 def schedule(*ids):
@@ -27,7 +33,7 @@ def schedule(*ids):
 def data(tmp_path, monkeypatch):
     monkeypatch.setattr(update, "DATA", tmp_path / "data")
     monkeypatch.setattr(update, "SITE", tmp_path / "site")
-    monkeypatch.setattr(update, "months_to_check", lambda saved, today: ["november"])
+    monkeypatch.setattr(update, "months_to_check", lambda today: ["november"])
     return tmp_path / "data"
 
 
@@ -45,6 +51,24 @@ def test_a_bad_game_is_skipped_and_the_others_are_saved(data):
     assert sorted(p.stem for p in (data / "games").glob("*.json")) == [GOOD]
     assert json.loads((data / "players.json").read_text(encoding="utf-8")) == {"aaaa01": "Ann A"}
     assert not list(data.rglob("*.tmp"))
+
+
+def test_a_missing_page_is_skipped_but_a_refusal_stops_the_run(data):
+    good = pbp_page([(1, "11:00.0", "away", f"{player('aaaa01')} makes 2-pt jump shot from 8 ft")])
+    failed = update.fetch_new(FakeFetcher(pages([BAD, GOOD], {BAD: 404, GOOD: good})), 10)
+    assert len(failed) == 1 and (data / "games" / f"{GOOD}.json").exists()
+    fetcher = FakeFetcher(pages([GOOD, "202611030HHH", "202611040HHH"], {"202611030HHH": 403, "202611040HHH": good}))
+    with pytest.raises(requests.HTTPError):
+        update.fetch_new(fetcher, 10)
+    assert fetcher.requests_made == 2  # the schedule, then the refused game: nothing more
+
+
+def test_reparse_never_goes_online(data, tmp_path, monkeypatch):
+    (data / "games").mkdir(parents=True)
+    (data / "games" / f"{GOOD}.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(requests.Session, "get", lambda *a, **k: pytest.fail("went online"))
+    failed = update.reparse(tmp_path / "empty-cache")
+    assert len(failed) == 1 and "cache" in failed[0]
 
 
 def test_a_schedule_that_no_longer_lists_saved_games_fails_loudly(data):

@@ -60,18 +60,18 @@
    "trips": 1
   },
   "dortlu01": {
-   "att": 13,
+   "att": 12,
    "fga": 10,
    "fgm2": 2,
    "fgm3": 2,
-   "fta": 6,
-   "ftm": 6,
+   "fta": 5,
+   "ftm": 5,
    "name": "L. Dort",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 16,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 15,
    "team": "ATL",
-   "trips": 3
+   "trips": 2
   },
   "ejiofzu01": {
    "att": 9,

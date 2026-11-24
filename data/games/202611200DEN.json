@@ -242,18 +242,18 @@
    "trips": 0
   },
   "smithja05": {
-   "att": 10,
+   "att": 9,
    "fga": 8,
    "fgm2": 4,
    "fgm3": 3,
-   "fta": 5,
-   "ftm": 4,
+   "fta": 4,
+   "ftm": 3,
    "name": "J. Smith",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 21,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 20,
    "team": "HOU",
-   "trips": 2
+   "trips": 1
   },
   "thompam01": {
    "att": 14,

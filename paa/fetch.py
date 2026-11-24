@@ -15,8 +15,9 @@ DELAY = 4.0  # seconds between requests, above the 3 s robots.txt asks for
 
 
 class Fetcher:
-    def __init__(self, cache_dir=None, delay=DELAY, session=None):
+    def __init__(self, cache_dir=None, delay=DELAY, session=None, offline=False):
         self.cache_dir = Path(cache_dir) if cache_dir else None
+        self.offline = offline  # only read the cache; never send a request
         self.delay = delay
         self.session = session or requests.Session()
         self.session.headers["User-Agent"] = USER_AGENT
@@ -27,6 +28,8 @@ class Fetcher:
         cached = self._cache_path(path)
         if use_cache and cached and cached.exists():
             return cached.read_text(encoding="utf-8")
+        if self.offline:
+            raise FileNotFoundError(f"{path} isn't in the cache")
         wait = self._last + self.delay - time.monotonic()
         if wait > 0:
             time.sleep(wait)

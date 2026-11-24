@@ -102,18 +102,18 @@
    "trips": 6
   },
   "greenaj01": {
-   "att": 9,
+   "att": 8,
    "fga": 8,
    "fgm2": 0,
    "fgm3": 4,
-   "fta": 1,
-   "ftm": 1,
+   "fta": 0,
+   "ftm": 0,
    "name": "A. Green",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 13,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 12,
    "team": "MIL",
-   "trips": 1
+   "trips": 0
   },
   "herroty01": {
    "att": 19,
