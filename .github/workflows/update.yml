@@ -65,21 +65,22 @@ jobs:
           git push
 
   # Builds the page from the tip of main (with the games just saved) and publishes it.
-  deploy:
+  build:
+    # Built and uploaded in its own job: deploy-pages lists the run's artifacts once and gives up,
+    # and a fresh upload isn't always listed yet in the same job (actions/deploy-pages#451).
     needs: update
     if: ${{ !cancelled() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.PAGES_ENABLED == 'true' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
       contents: read
-      pages: write
-      id-token: write
+    # Overlapping runs build one at a time, so an older page is never published last.
     concurrency:
-      group: pages
+      group: pages-build
       cancel-in-progress: false
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    # One artifact name per attempt: a re-run that rebuilds never meets the earlier attempt's upload.
+    outputs:
+      artifact: github-pages-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -96,5 +97,29 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site
+          name: github-pages-${{ github.run_attempt }}
+          retention-days: 3  # so a deploy-only re-run still works a day or two later
+
+  deploy:
+    # When only this job failed, "Re-run failed jobs" re-runs just it, against the build above;
+    # when update failed, build and deploy run again under the new attempt's artifact name.
+    needs: build
+    # Without this, the implicit success() also needs update, which is skipped on a push and
+    # fails on a night with a bad game: the page would never be published then.
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
       - id: deploy
         uses: actions/deploy-pages@v5
+        with:
+          artifact_name: ${{ needs.build.outputs.artifact }}
