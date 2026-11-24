@@ -111,7 +111,7 @@ def game(pbp_html, game_id):
                     loose_ball = (period, clock, drawn)
                 continue
             if lowered.startswith("turnover"):
-                made_by = and_one = None
+                made_by = None  # a foul drawn after this can't make an and-one; one already drawn stands
             # Everyone else named first in a column plays for that team (shooter, rebounder,
             # turnover...), and so do both players in a substitution.
             same_team = cell.find_all("a", href=PLAYER_HREF)[:2] if "enters the game for" in text else []
@@ -160,6 +160,7 @@ def game(pbp_html, game_id):
                 and_one = None  # the and-one's point goes to the shot: no new attempt
             elif number == 1:
                 loose_ball = None if total == 1 else loose_ball
+                and_one = None if and_one == pid else and_one  # his shot missed: a trip, not an and-one
                 stats["trips"] += 1  # a trip of two or three is one attempt
                 stats["att"] += 1
     for pid, tally in votes.items():

@@ -16,13 +16,26 @@ def ratio(points, attempts):
     return points / attempts if attempts else None
 
 
-def team_games(games):
-    """How many games each team has played this season."""
-    counts = defaultdict(int)
-    for g in games:
-        counts[g["away"]] += 1
-        counts[g["home"]] += 1
-    return counts
+def stint_team_games(games):
+    """{(player, team): his team's games that count for him there}. A player's team games are
+    his team's games this season; for a traded player, his old team's games until his first game
+    for the new one, then the new team's from there on."""
+    dates = defaultdict(list)  # team -> dates of its games
+    first = defaultdict(dict)  # player -> {team: date of his first game for it}
+    for g in sorted(games, key=lambda g: g["id"]):
+        date = g["id"][:8]
+        dates[g["away"]].append(date)
+        dates[g["home"]].append(date)
+        for pid, p in g["players"].items():
+            first[pid].setdefault(p["team"], date)
+    out = {}
+    for pid, teams in first.items():
+        order = sorted(teams, key=teams.get)
+        for i, team in enumerate(order):
+            start = teams[team] if i else ""
+            end = teams[order[i + 1]] if i + 1 < len(order) else "99999999"
+            out[(pid, team)] = sum(start <= d < end for d in dates[team])
+    return out
 
 
 def league_average(games):
@@ -35,7 +48,7 @@ def season(games, names=None):
     """One row per player for the season, sorted by PAA per attempt (best first)."""
     names = names or {}
     league = league_average(games)
-    played = team_games(games)
+    played = stint_team_games(games)
     rows = {}
     for g in sorted(games, key=lambda g: g["id"]):
         for pid, p in g["players"].items():
@@ -54,7 +67,7 @@ def season(games, names=None):
         row["ppa"] = row["pts"] / row["att"]
         row["paa_pa"] = row["ppa"] - league
         row["paa"] = row["pts"] - league * row["att"]
-        row["team_gp"] = played[row["team"]]
+        row["team_gp"] = sum(n for (p, _), n in played.items() if p == row["id"])
         row["pts_per_team_game"] = row["pts"] / row["team_gp"]
         row["qualified"] = row["pts_per_team_game"] >= SEASON_MIN_PTS_PER_TEAM_GAME
         out.append(row)
@@ -80,7 +93,7 @@ def versus_teammates(games, names=None):
             stint["att"] += p["att"]
             stint["team_pts"] += team_totals[p["team"]][0]
             stint["team_att"] += team_totals[p["team"]][1]
-    played = team_games(games)
+    played = stint_team_games(games)
     out = []
     for (pid, team), s in stints.items():
         rest_pts, rest_att = s["team_pts"] - s["pts"], s["team_att"] - s["att"]
@@ -89,8 +102,8 @@ def versus_teammates(games, names=None):
         ppa, rest = s["pts"] / s["att"], rest_pts / rest_att
         out.append({"id": pid, "name": s["name"], "team": team, "gp": s["gp"],
                     "ppg": s["pts"] / s["gp"], "att": s["att"], "ppa": ppa, "rest_ppa": rest,
-                    "diff": ppa - rest, "team_gp": played[team],
-                    "qualified": s["pts"] / played[team] >= SEASON_MIN_PTS_PER_TEAM_GAME})
+                    "diff": ppa - rest, "team_gp": played[(pid, team)],
+                    "qualified": s["pts"] / played[(pid, team)] >= SEASON_MIN_PTS_PER_TEAM_GAME})
     out.sort(key=lambda r: -r["diff"])
     return out
 

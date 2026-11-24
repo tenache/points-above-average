@@ -42,6 +42,21 @@ def test_leaderboard_minimum_is_points_per_team_game():
     assert not mates["star"]["qualified"] and mates["star"]["team_gp"] == 10
 
 
+def test_a_traded_player_counts_his_old_team_until_the_trade_then_the_new_one():
+    # 20 points a game for 4 games with AAA, then 2 games with BBB (whose season is 6 games long):
+    # 120 points over 4 + 2 team games, not over BBB's 6.
+    games = [game(f"2026110{d}0HHH", "AAA", "HHH", {"t": line("AAA", 20, 10), "m": line("AAA", 5, 5)})
+             for d in range(1, 5)]
+    games += [game(f"2026110{d}0HHH", "BBB", "HHH", {"b": line("BBB", 5, 5)}) for d in range(1, 5)]
+    games += [game(f"2026110{d}0HHH", "BBB", "HHH", {"t": line("BBB", 0, 5), "b": line("BBB", 5, 5)})
+              for d in (5, 6)]
+    _, rows = stats.season(games)
+    traded = {r["id"]: r for r in rows}["t"]
+    assert (traded["team"], traded["team_gp"]) == ("BBB", 6)
+    stints = {(r["id"], r["team"]): r for r in stats.versus_teammates(games)}
+    assert stints[("t", "AAA")]["team_gp"] == 4 and stints[("t", "BBB")]["team_gp"] == 2
+
+
 def test_players_without_attempts_count_games_but_get_no_row():
     games = [game("202611010HHH", "AAA", "HHH", {"a": line("AAA", 10, 5), "b": line("AAA", 0, 0)}),
              game("202611020HHH", "AAA", "HHH", {"a": line("AAA", 0, 0)})]
