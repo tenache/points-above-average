@@ -120,7 +120,7 @@ def reparse(cache_dir, log=print):
 
 def rounded(value):
     if isinstance(value, float):
-        return round(value, 4)
+        return round(value, 6)  # enough that the page rounds the true value, not a rounded one
     if isinstance(value, dict):
         return {k: rounded(v) for k, v in value.items()}
     if isinstance(value, list):

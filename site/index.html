@@ -140,7 +140,7 @@ footer a { color: inherit; }
 <body>
 <main>
   <h1>Points above average</h1>
-  <p class="lede">How many more points a player scores per game than an average NBA shooter would on the same attempts, and per attempt. An attempt is a shot, or one trip to the free-throw line. <span id="season-line"></span></p>
+  <p class="lede">How many more points a player scores per game than an average NBA shooter would on the same attempts. An attempt is a shot, or one trip to the free-throw line. <span id="season-line"></span></p>
 
   <div class="tiles" id="tiles"></div>
 
@@ -225,10 +225,10 @@ footer a { color: inherit; }
   <section id="about" role="tabpanel" aria-labelledby="tab-about">
     <div class="card">
       <h2>How it works</h2>
+      <p><b>PAA per game</b>, the leaderboard's main number, is the running total (points − league average × attempts) over the games he played. It rewards volume and efficiency together: a great shooter who shoots a lot piles it up, a star who shoots a lot at a below-average rate goes negative. Last night's <b>PAA</b> is the same number for one game.</p>
       <p><b>PAA per attempt</b> = the player's points per attempt − the league's points per attempt. Positive is better than average. If the league scores 1 point per attempt, a made 2 is +1, and a made 2 followed by a miss is 0.</p>
       <p><b>An attempt</b> is a field-goal attempt or one trip to the free-throw line: two or three free throws in a trip count as one attempt, so 2 of 2 from the line is worth the same as a made 2. An and-one is one attempt (the free throw adds a point to the shot). Technical and flagrant free throws are left out, points included. Turnovers don't count.</p>
       <p><b>The league average</b> is every player's points over every player's attempts this season, counted the same way. Last night's numbers use the average through that night, so they don't change later.</p>
-      <p><b>PAA per game</b>, the leaderboard's main number, is the running total (points − league average × attempts) over the games he played. It rewards volume and efficiency together: a great shooter who shoots a lot piles it up, a star who shoots a lot at a below-average rate goes negative. Last night's <b>PAA</b> is the same number for one game.</p>
       <p><b>Total PAA</b> is that running total for the whole season.</p>
       <p><b>Who's on the boards</b>: players with at least 5 points per team game, his season points over the games his team has played. A good bench player qualifies, and a player who stops playing drops off: 45 points in game 1 stays on for 9 team games.</p>
       <p><b>Versus teammates</b> compares a player with the rest of his team in the games he played, so a player on a bad shooting team doesn't get punished for his teammates, and vice versa. Traded players get one row per team.</p>
@@ -371,7 +371,7 @@ function renderHeader(d) {
   $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
   $("tiles").innerHTML = [
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
-    ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pg)}">${fmt.signed2(leader.paa_pg)}</span><div class="note">points above average per game; ${fmt.signed(leader.paa_pa)} per attempt over ${plural(leader.gp, "game")}</div>` : "—"],
+    ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pg)}">${fmt.signed2(leader.paa_pg)}</span><div class="note">a game (${fmt.signed(leader.paa_pa)} per attempt), ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
     [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa_pa)}">${fmt.signed(night.paa_pa)}</span><div class="note">${night.pts} points on ${plural(night.att, "attempt")}</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
   const latest = new Date(d.last_night + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
@@ -432,13 +432,13 @@ function renderNights(d) {
   select.innerHTML = dates.map((x) => `<option value="${x}">${label(x)}</option>`).join("");
   const cols = [
     { label: "Player", left: true, cell: (r) => `${playerLink(r)}<span class="team">vs ${esc(r.opp)}</span>` },
-    { label: "PAA / att", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>` },
     { label: "PAA", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points above average in the game" },
+    { label: "PAA / att", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>`, title: "Points per attempt minus the league's" },
     { label: "Pts", cell: (r) => r.pts },
     { label: "Att", cell: (r) => r.att },
   ];
   function table(id, rows) {
-    $(id).innerHTML = `<thead><tr><th class="l">#</th>${cols.map((c) => `<th class="${c.left ? "l" : ""}">${c.label}</th>`).join("")}</tr></thead><tbody>` +
+    $(id).innerHTML = `<thead><tr><th class="l">#</th>${cols.map((c) => `<th class="${c.left ? "l" : ""}"${c.title ? ` title="${esc(c.title)}"` : ""}>${c.label}</th>`).join("")}</tr></thead><tbody>` +
       (rows.length ? rows.map((r, i) => `<tr><td class="rank l">${i + 1}</td>${cols.map((c) => `<td class="${c.left ? "l" : ""}">${c.cell(r)}</td>`).join("")}</tr>`).join("")
         : `<tr><td colspan="${cols.length + 1}" class="empty l">Nobody.</td></tr>`) + "</tbody>";
   }
@@ -560,7 +560,7 @@ function drawScatter() {
     if (!r) return;
     tip.innerHTML = `<b>${esc(r.name)} <span>${esc(r.team)}</span></b>` +
       `${AXES[yk].label}: <b style="display:inline" class="${cls(r.y)}">${AXES[yk].fmt(r.y)}</b><br>` +
-      `<span>${AXES[xk].label}: ${AXES[xk].fmt(r.x)} · ${fmt.three(r.ppa)} pts/att · ${plural(r.gp, "game")}</span>`;
+      `<span>${AXES[xk].label}: ${AXES[xk].fmt(r.x)} · ${yk === "paa_pg" ? `${fmt.signed(r.paa_pa)} PAA/att` : `${fmt.three(r.ppa)} pts/att`} · ${plural(r.gp, "game")}</span>`;
     tip.style.display = "block";
     const scale = svg.getBoundingClientRect().width / width;
     const cx = +circle.getAttribute("cx") * scale, cy = +circle.getAttribute("cy") * scale;
