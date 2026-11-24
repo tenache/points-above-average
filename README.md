@@ -23,7 +23,7 @@ The league average is total points over total attempts, across every player this
 
 - **Leaderboard**, ranked by PAA per game: players with at least 5 points per *team* game (his season points over the games his team has played), so a good bench player can be compared with a star, and a player who stops playing drops off: 45 points in game 1 stays on the board for 9 team games.
 - **Versus teammates**: the player's points per attempt minus the rest of his team's.
-- **Last night**: who did especially well and who did badly (by PAA per attempt, with each player's PAA for the game), among players with at least 10 points in the game.
+- **Last night**: who did especially well and who did badly (ranked by each player's points above average in the game, with his PAA per attempt), among players with at least 10 points in the game.
 - **Scatter plots**: attempts or points per game against PAA per attempt, PAA per game or versus teammates.
 
 ## Data
