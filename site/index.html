@@ -1,0 +1,528 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Points Above Average</title>
+<meta name="description" content="NBA players' points per attempt compared with the league average, updated every morning.">
+<style>
+:root {
+  color-scheme: light;
+  --page: #f9f9f7;
+  --surface: #fcfcfb;
+  --ink: #0b0b0b;
+  --ink-2: #52514e;
+  --muted: #898781;
+  --grid: #e1e0d9;
+  --axis: #c3c2b7;
+  --border: rgba(11, 11, 11, 0.10);
+  --above: #2a78d6;
+  --below: #e34948;
+  --above-text: #1c5cab;
+  --below-text: #b8302f;
+  --wash: rgba(42, 120, 214, 0.08);
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --page: #0d0d0d;
+    --surface: #1a1a19;
+    --ink: #f0efec;
+    --ink-2: #c3c2b7;
+    --muted: #898781;
+    --grid: #2c2c2a;
+    --axis: #383835;
+    --border: rgba(255, 255, 255, 0.10);
+    --above: #3987e5;
+    --below: #e66767;
+    --above-text: #86b6ef;
+    --below-text: #f09595;
+    --wash: rgba(57, 135, 229, 0.14);
+  }
+}
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --page: #0d0d0d;
+  --surface: #1a1a19;
+  --ink: #f0efec;
+  --ink-2: #c3c2b7;
+  --muted: #898781;
+  --grid: #2c2c2a;
+  --axis: #383835;
+  --border: rgba(255, 255, 255, 0.10);
+  --above: #3987e5;
+  --below: #e66767;
+  --above-text: #86b6ef;
+  --below-text: #f09595;
+  --wash: rgba(57, 135, 229, 0.14);
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0;
+  background: var(--page);
+  color: var(--ink);
+  font: 15px/1.45 system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+main { max-width: 960px; margin: 0 auto; padding: 24px 16px 48px; }
+h1 { font-size: 26px; margin: 0 0 4px; letter-spacing: -0.01em; }
+h2 { font-size: 18px; margin: 0 0 4px; }
+p { margin: 0 0 8px; }
+.lede { color: var(--ink-2); margin-bottom: 16px; max-width: 60ch; }
+.tiles { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 12px; margin-bottom: 24px; }
+.tile { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 12px 14px; }
+.tile .label { color: var(--ink-2); font-size: 13px; }
+.tile .value { font-size: 24px; font-weight: 600; }
+nav { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 16px; position: sticky; top: 0; padding: 8px 0; background: var(--page); z-index: 2; }
+nav button, .seg button {
+  font: inherit; font-size: 14px; color: var(--ink); background: var(--surface);
+  border: 1px solid var(--border); border-radius: 999px; padding: 6px 12px; cursor: pointer;
+}
+nav button[aria-selected="true"], .seg button[aria-pressed="true"] { background: var(--ink); color: var(--page); border-color: var(--ink); }
+section { display: none; }
+section.active { display: block; }
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 12px; padding: 16px; margin-bottom: 16px; }
+.note { color: var(--ink-2); font-size: 13px; }
+.controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 12px; margin: 10px 0 12px; }
+.controls label { font-size: 14px; color: var(--ink-2); display: flex; align-items: center; gap: 6px; }
+input[type="search"], input[type="date"], select {
+  font: inherit; font-size: 14px; color: var(--ink); background: var(--page);
+  border: 1px solid var(--border); border-radius: 8px; padding: 6px 8px;
+}
+input[type="search"] { width: 200px; max-width: 100%; }
+.seg { display: inline-flex; gap: 4px; }
+.scroll { overflow-x: auto; -webkit-overflow-scrolling: touch; }
+table { border-collapse: collapse; width: 100%; font-size: 14px; }
+th, td { padding: 6px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--grid); }
+th { color: var(--ink-2); font-weight: 500; font-size: 13px; }
+th.sortable { cursor: pointer; user-select: none; }
+th.sortable:hover { color: var(--ink); }
+th[aria-sort="descending"]::after { content: " ↓"; }
+th[aria-sort="ascending"]::after { content: " ↑"; }
+td.l, th.l { text-align: left; }
+td.rank { color: var(--muted); width: 2.5em; }
+td { font-variant-numeric: tabular-nums; }
+td a { color: inherit; text-decoration: none; }
+td a:hover { text-decoration: underline; }
+.team { color: var(--muted); font-size: 12px; margin-left: 4px; }
+.pos { color: var(--above-text); font-weight: 600; }
+.neg { color: var(--below-text); font-weight: 600; }
+tr.hl td { background: var(--wash); }
+.more { margin-top: 10px; font: inherit; font-size: 14px; background: none; border: 0; color: var(--above-text); cursor: pointer; padding: 4px 0; }
+.two { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+@media (max-width: 720px) { .two { grid-template-columns: 1fr; } }
+.chart-wrap { position: relative; }
+svg { display: block; width: 100%; height: auto; overflow: visible; }
+svg text { fill: var(--muted); font-size: 11px; font-family: inherit; }
+svg .gridline { stroke: var(--grid); stroke-width: 1; }
+svg .zero { stroke: var(--axis); stroke-width: 1.5; }
+svg .dot { stroke: var(--surface); stroke-width: 2; cursor: pointer; }
+svg .dot.dim { opacity: 0.25; }
+svg .dot.picked { stroke: var(--ink); stroke-width: 2; }
+svg .label { fill: var(--ink); font-size: 12px; font-weight: 600; paint-order: stroke; stroke: var(--surface); stroke-width: 3px; }
+.tip {
+  position: absolute; pointer-events: none; background: var(--surface); color: var(--ink);
+  border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); display: none; white-space: nowrap; z-index: 3;
+}
+.tip b { display: block; }
+.tip span { color: var(--ink-2); }
+.legend { display: flex; gap: 16px; font-size: 13px; color: var(--ink-2); margin-top: 6px; flex-wrap: wrap; }
+.key { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+footer { color: var(--ink-2); font-size: 13px; margin-top: 32px; border-top: 1px solid var(--grid); padding-top: 16px; }
+footer a { color: inherit; }
+.empty { color: var(--muted); padding: 12px 0; }
+.error { color: var(--below-text); }
+</style>
+</head>
+<body>
+<main>
+  <h1>Points above average</h1>
+  <p class="lede">How many more points a player scores per attempt than the average NBA player. An attempt is a shot, or one trip to the free-throw line. <span id="season-line"></span></p>
+
+  <div class="tiles" id="tiles"></div>
+
+  <nav role="tablist">
+    <button role="tab" data-tab="leaders" aria-selected="true">Leaderboard</button>
+    <button role="tab" data-tab="night" aria-selected="false">Last night</button>
+    <button role="tab" data-tab="mates" aria-selected="false">Versus teammates</button>
+    <button role="tab" data-tab="scatter" aria-selected="false">Scatter</button>
+    <button role="tab" data-tab="about" aria-selected="false">How it works</button>
+  </nav>
+
+  <section id="leaders" class="active">
+    <div class="card">
+      <h2>Season leaderboard</h2>
+      <p class="note" id="leaders-note"></p>
+      <div class="controls">
+        <input type="search" id="leaders-search" placeholder="Find a player or team" aria-label="Find a player or team">
+        <div class="seg" role="group" aria-label="Order">
+          <button type="button" data-order="desc" aria-pressed="true">Best first</button>
+          <button type="button" data-order="asc" aria-pressed="false">Worst first</button>
+        </div>
+      </div>
+      <div class="scroll"><table id="leaders-table"></table></div>
+      <button class="more" id="leaders-more" type="button"></button>
+    </div>
+  </section>
+
+  <section id="night">
+    <div class="card">
+      <h2 id="night-title">Last night</h2>
+      <p class="note" id="night-note"></p>
+      <div class="controls">
+        <button class="more" type="button" id="night-prev" aria-label="Previous night">← Earlier</button>
+        <select id="night-date" aria-label="Night"></select>
+        <button class="more" type="button" id="night-next" aria-label="Next night">Later →</button>
+      </div>
+      <div class="two">
+        <div><h2>Did especially well</h2><div class="scroll"><table id="night-best"></table></div></div>
+        <div><h2>Did badly</h2><div class="scroll"><table id="night-worst"></table></div></div>
+      </div>
+    </div>
+  </section>
+
+  <section id="mates">
+    <div class="card">
+      <h2>Versus his own teammates</h2>
+      <p class="note" id="mates-note"></p>
+      <div class="controls">
+        <input type="search" id="mates-search" placeholder="Find a player or team" aria-label="Find a player or team">
+        <div class="seg" role="group" aria-label="Order">
+          <button type="button" data-order="desc" aria-pressed="true">Most above</button>
+          <button type="button" data-order="asc" aria-pressed="false">Most below</button>
+        </div>
+      </div>
+      <div class="scroll"><table id="mates-table"></table></div>
+      <button class="more" id="mates-more" type="button"></button>
+    </div>
+  </section>
+
+  <section id="scatter">
+    <div class="card">
+      <h2 id="scatter-title">Volume against efficiency</h2>
+      <p class="note">Each dot is a player. Hover or tap a dot for details; type a name to find someone.</p>
+      <div class="controls">
+        <label>Across <select id="sx">
+          <option value="apg">Attempts per game</option>
+          <option value="ppg">Points per game</option>
+        </select></label>
+        <label>Up <select id="sy">
+          <option value="paa_pa">PAA per attempt (vs the league)</option>
+          <option value="diff">Versus his teammates</option>
+        </select></label>
+        <label><input type="checkbox" id="sall"> Everyone (not just 6+ points a game)</label>
+        <input type="search" id="ssearch" placeholder="Find a player" aria-label="Find a player in the chart">
+      </div>
+      <div class="chart-wrap" id="chart-wrap"><svg id="chart" role="img" aria-label="Scatter plot of players"></svg><div class="tip" id="tip"></div></div>
+      <div class="legend"><span><i class="key" style="background:var(--above)"></i>Above average</span><span><i class="key" style="background:var(--below)"></i>Below average</span></div>
+    </div>
+  </section>
+
+  <section id="about">
+    <div class="card">
+      <h2>How it works</h2>
+      <p><b>PAA per attempt</b> = the player's points per attempt − the league's points per attempt. Positive is better than average. If the league scores 1 point per attempt, a made 2 is +1, and a made 2 followed by a miss is 0.</p>
+      <p><b>An attempt</b> is a field-goal attempt or one trip to the free-throw line: two or three free throws in a trip count as one attempt, so 2 of 2 from the line is worth the same as a made 2. An and-one is one attempt (the free throw adds a point to the shot). Technical and flagrant free throws are left out, points included. Turnovers don't count.</p>
+      <p><b>The league average</b> is every player's points over every player's attempts this season, counted the same way. Last night's numbers use the average through that night, so they don't change later.</p>
+      <p><b>Total PAA</b> in the leaderboard is the running total: points − league average × attempts. It rewards volume: a great shooter who shoots a lot piles it up.</p>
+      <p><b>Versus teammates</b> compares a player with the rest of his team in the games he played, so a player on a bad shooting team doesn't get punished for his teammates, and vice versa. Traded players get one row per team.</p>
+      <p class="note" id="check-line"></p>
+    </div>
+  </section>
+
+  <footer>
+    Data from <a href="https://www.basketball-reference.com/">Basketball-Reference</a> play-by-play, fetched once a day.
+    <span id="updated"></span>
+  </footer>
+</main>
+
+<script>
+"use strict";
+const $ = (id) => document.getElementById(id);
+const BBREF = "https://www.basketball-reference.com/players/";
+const fmt = {
+  signed: (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(3),
+  signed1: (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1),
+  three: (v) => v.toFixed(3),
+  one: (v) => v.toFixed(1),
+  int: (v) => String(Math.round(v)),
+};
+const cls = (v) => (v > 0 ? "pos" : v < 0 ? "neg" : "");
+const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+const playerLink = (r) => `<a href="${BBREF}${esc(r.id[0])}/${esc(r.id)}.html" target="_blank" rel="noopener">${esc(r.name)}</a><span class="team">${esc(r.team)}</span>`;
+const norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const matches = (r, q) => !q || norm(r.name).includes(q) || r.team.toLowerCase() === q;
+
+function sortable(tableId, columns, getRows, opts) {
+  // A table whose headers sort it; opts: {key, dir, page}
+  const table = $(tableId);
+  const state = { key: opts.key, dir: opts.dir, limit: opts.page };
+  const more = opts.more ? $(opts.more) : null;
+  function render() {
+    const rows = getRows().slice().sort((a, b) => {
+      const x = a[state.key], y = b[state.key];
+      const c = typeof x === "string" ? x.localeCompare(y) : x - y;
+      return state.dir === "asc" ? c : -c;
+    });
+    const shown = rows.slice(0, state.limit);
+    const head = "<tr><th class=\"l\">#</th>" + columns.map((c) =>
+      `<th class="${c.left ? "l" : ""} ${c.sort ? "sortable" : ""}" data-key="${c.sort || ""}" ` +
+      `${c.sort === state.key ? `aria-sort="${state.dir === "asc" ? "ascending" : "descending"}"` : ""} ` +
+      `${c.title ? `title="${esc(c.title)}"` : ""}>${c.label}</th>`).join("") + "</tr>";
+    const body = shown.length ? shown.map((r, i) => `<tr${opts.highlight && opts.highlight(r) ? ' class="hl"' : ""}>` +
+      `<td class="rank l">${i + 1}</td>` + columns.map((c) => `<td class="${c.left ? "l" : ""}">${c.cell(r)}</td>`).join("") + "</tr>").join("")
+      : `<tr><td colspan="${columns.length + 1}" class="empty l">Nobody here yet.</td></tr>`;
+    table.innerHTML = `<thead>${head}</thead><tbody>${body}</tbody>`;
+    table.querySelectorAll("th.sortable").forEach((th) => th.addEventListener("click", () => {
+      const key = th.dataset.key;
+      if (state.key === key) state.dir = state.dir === "asc" ? "desc" : "asc";
+      else { state.key = key; state.dir = "desc"; }
+      if (opts.onSort) opts.onSort(state);
+      render();
+    }));
+    if (more) {
+      more.hidden = rows.length <= opts.page;
+      more.textContent = state.limit < rows.length ? `Show all ${rows.length}` : "Show fewer";
+    }
+  }
+  if (more) more.addEventListener("click", () => {
+    state.limit = state.limit < Infinity ? Infinity : opts.page;
+    render();
+  });
+  state.render = render;
+  return state;
+}
+
+function segmented(container, state) {
+  container.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    state.dir = b.dataset.order;
+    sync(container, state);
+    state.render();
+  }));
+}
+function sync(container, state) {
+  container.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.order === state.dir)));
+}
+
+function setupTabs() {
+  const tabs = document.querySelectorAll("nav button");
+  function show(name) {
+    tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
+    document.querySelectorAll("section").forEach((s) => s.classList.toggle("active", s.id === name));
+    if (name === "scatter") drawScatter();
+    try { history.replaceState(null, "", "#" + name); } catch (e) { /* file:// or sandbox */ }
+  }
+  tabs.forEach((t) => t.addEventListener("click", () => show(t.dataset.tab)));
+  const start = location.hash.slice(1);
+  if ([...tabs].some((t) => t.dataset.tab === start)) show(start);
+}
+
+let DATA;
+
+function renderHeader(d) {
+  const leader = d.players.find((r) => r.qualified);
+  const night = d.last_night && d.nights[d.last_night].rows[0];
+  $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
+  $("tiles").innerHTML = [
+    ["League average", `${fmt.three(d.league_ppa)} <span class="note">points per attempt</span>`],
+    ["Top of the league", leader ? `${esc(leader.name)} <span class="pos">${fmt.signed(leader.paa_pa)}</span>` : "—"],
+    ["Best last night", night ? `${esc(night.name)} <span class="pos">${fmt.signed(night.paa_pa)}</span>` : "—"],
+  ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
+  $("updated").textContent = `Updated ${new Date(d.updated).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}.`;
+  const c = d.check;
+  $("check-line").textContent = c.players_checked
+    ? (c.mismatches.length
+      ? `Check: ${c.mismatches.length} of ${c.players_checked} players' shot counts differ from Basketball-Reference's season totals (usually a game that's in one and not yet in the other).`
+      : `Check: shot, free-throw and point totals match Basketball-Reference's season totals for all ${c.players_checked} players.`)
+    : "";
+}
+
+function renderLeaders(d) {
+  $("leaders-note").textContent = `Players with at least ${d.min_ppg} points per game. Click a column to sort.`;
+  const search = $("leaders-search");
+  const state = sortable("leaders-table", [
+    { label: "Player", left: true, cell: playerLink, sort: "name" },
+    { label: "PAA / att", sort: "paa_pa", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>`, title: "Points per attempt minus the league's" },
+    { label: "Pts / att", sort: "ppa", cell: (r) => fmt.three(r.ppa) },
+    { label: "Total PAA", sort: "paa", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points minus league average × attempts" },
+    { label: "Pts / g", sort: "ppg", cell: (r) => fmt.one(r.ppg) },
+    { label: "Att / g", sort: "apg", cell: (r) => fmt.one(r.apg) },
+    { label: "Games", sort: "gp", cell: (r) => r.gp },
+  ], () => d.players.filter((r) => r.qualified && matches(r, norm(search.value.trim()))),
+  { key: "paa_pa", dir: "desc", page: 25, more: "leaders-more", onSort: () => sync(document.querySelector("#leaders .seg"), state) });
+  search.addEventListener("input", state.render);
+  segmented(document.querySelector("#leaders .seg"), state);
+  state.render();
+}
+
+function renderMates(d) {
+  $("mates-note").textContent = `His points per attempt minus the rest of his team's, in the games he played. At least ${d.min_ppg} points per game.`;
+  const search = $("mates-search");
+  const state = sortable("mates-table", [
+    { label: "Player", left: true, cell: playerLink, sort: "name" },
+    { label: "Gap", sort: "diff", cell: (r) => `<span class="${cls(r.diff)}">${fmt.signed(r.diff)}</span>`, title: "His points per attempt minus his teammates'" },
+    { label: "His pts / att", sort: "ppa", cell: (r) => fmt.three(r.ppa) },
+    { label: "Teammates'", sort: "rest_ppa", cell: (r) => fmt.three(r.rest_ppa) },
+    { label: "Pts / g", sort: "ppg", cell: (r) => fmt.one(r.ppg) },
+    { label: "Games", sort: "gp", cell: (r) => r.gp },
+  ], () => d.teammates.filter((r) => r.qualified && matches(r, norm(search.value.trim()))),
+  { key: "diff", dir: "desc", page: 25, more: "mates-more", onSort: () => sync(document.querySelector("#mates .seg"), state) });
+  search.addEventListener("input", state.render);
+  segmented(document.querySelector("#mates .seg"), state);
+  state.render();
+}
+
+function renderNights(d) {
+  const dates = Object.keys(d.nights).sort().reverse();
+  const select = $("night-date");
+  const label = (iso) => new Date(iso + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+  select.innerHTML = dates.map((x) => `<option value="${x}">${label(x)}</option>`).join("");
+  const cols = [
+    { label: "Player", left: true, cell: (r) => `${playerLink(r)}<span class="team">vs ${esc(r.opp)}</span>` },
+    { label: "PAA / att", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>` },
+    { label: "Pts", cell: (r) => r.pts },
+    { label: "Att", cell: (r) => r.att },
+  ];
+  function table(id, rows) {
+    $(id).innerHTML = `<thead><tr><th class="l">#</th>${cols.map((c) => `<th class="${c.left ? "l" : ""}">${c.label}</th>`).join("")}</tr></thead><tbody>` +
+      (rows.length ? rows.map((r, i) => `<tr><td class="rank l">${i + 1}</td>${cols.map((c) => `<td class="${c.left ? "l" : ""}">${c.cell(r)}</td>`).join("")}</tr>`).join("")
+        : `<tr><td colspan="5" class="empty l">Nobody.</td></tr>`) + "</tbody>";
+  }
+  function show() {
+    const date = select.value;
+    const night = d.nights[date];
+    const rows = night ? night.rows : [];
+    $("night-title").textContent = date === dates[0] ? "Last night" : label(date);
+    $("night-note").textContent = night
+      ? `Players with at least ${d.min_night_pts} points in the game, against the league average through that night (${fmt.three(night.league_ppa)} points per attempt).`
+      : "";
+    table("night-best", rows.filter((r) => r.paa_pa > 0).slice(0, 10));
+    table("night-worst", rows.filter((r) => r.paa_pa < 0).reverse().slice(0, 10));
+    const i = dates.indexOf(date);
+    $("night-prev").disabled = i >= dates.length - 1;
+    $("night-next").disabled = i <= 0;
+  }
+  select.addEventListener("change", show);
+  $("night-prev").addEventListener("click", () => { select.selectedIndex = Math.min(select.selectedIndex + 1, dates.length - 1); show(); });
+  $("night-next").addEventListener("click", () => { select.selectedIndex = Math.max(select.selectedIndex - 1, 0); show(); });
+  if (dates.length) show();
+}
+
+// Scatter: inline SVG, a dot per player, a zero line at the league average (or at "same as teammates").
+const AXES = {
+  apg: { label: "Attempts per game", fmt: fmt.one },
+  ppg: { label: "Points per game", fmt: fmt.one },
+  paa_pa: { label: "PAA per attempt", fmt: fmt.signed },
+  diff: { label: "Versus teammates", fmt: fmt.signed },
+};
+
+function niceTicks(min, max, count) {
+  const span = max - min || 1;
+  const step0 = span / count;
+  const mag = Math.pow(10, Math.floor(Math.log10(step0)));
+  const step = [1, 2, 2.5, 5, 10].map((m) => m * mag).find((s) => span / s <= count) || 10 * mag;
+  const ticks = [];
+  for (let t = Math.ceil(min / step) * step; t <= max + step * 1e-9; t += step) ticks.push(+t.toFixed(10));
+  return ticks;
+}
+
+let picked = null;
+function scatterRows() {
+  const xk = $("sx").value, yk = $("sy").value, all = $("sall").checked;
+  if (yk === "diff") {
+    // Traded players have one teammates row per team; the x value comes from that stint.
+    return DATA.teammates.filter((r) => all || r.qualified).map((r) => ({
+      ...r, x: xk === "ppg" ? r.ppg : r.att / r.gp, y: r.diff, key: r.id + r.team }));
+  }
+  return DATA.players.filter((r) => all || r.qualified).map((r) => ({ ...r, x: r[xk], y: r.paa_pa, key: r.id }));
+}
+
+function drawScatter() {
+  if (!DATA) return;
+  const svg = $("chart"), tip = $("tip"), wrap = $("chart-wrap");
+  const xk = $("sx").value, yk = $("sy").value;
+  const rows = scatterRows();
+  const width = Math.max(320, wrap.clientWidth), height = Math.round(Math.min(520, Math.max(300, width * 0.62)));
+  const m = { l: 52, r: 12, t: 12, b: 40 };
+  svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
+  $("scatter-title").textContent = `${AXES[xk].label} against ${AXES[yk].label.toLowerCase()}`;
+  if (!rows.length) { svg.innerHTML = ""; return; }
+  const xs = rows.map((r) => r.x), ys = rows.map((r) => r.y);
+  const x0 = 0, x1 = Math.max(...xs) * 1.04;
+  let y0 = Math.min(...ys, 0), y1 = Math.max(...ys, 0);
+  const pad = (y1 - y0) * 0.06 || 0.1; y0 -= pad; y1 += pad;
+  const X = (v) => m.l + (v - x0) / (x1 - x0) * (width - m.l - m.r);
+  const Y = (v) => m.t + (y1 - v) / (y1 - y0) * (height - m.t - m.b);
+  const parts = [];
+  for (const t of niceTicks(y0, y1, 6)) {
+    parts.push(`<line class="gridline" x1="${m.l}" x2="${width - m.r}" y1="${Y(t)}" y2="${Y(t)}"/>`);
+    parts.push(`<text x="${m.l - 6}" y="${Y(t) + 4}" text-anchor="end">${AXES[yk].fmt(t)}</text>`);
+  }
+  for (const t of niceTicks(x0, x1, 7)) {
+    parts.push(`<text x="${X(t)}" y="${height - m.b + 16}" text-anchor="middle">${fmt.int(t)}</text>`);
+  }
+  parts.push(`<line class="zero" x1="${m.l}" x2="${width - m.r}" y1="${Y(0)}" y2="${Y(0)}"/>`);
+  parts.push(`<text x="${width - m.r}" y="${Y(0) - 6}" text-anchor="end">${yk === "diff" ? "same as teammates" : "league average"}</text>`);
+  parts.push(`<text x="${(m.l + width - m.r) / 2}" y="${height - 4}" text-anchor="middle">${AXES[xk].label}</text>`);
+  parts.push(`<text transform="translate(12 ${(m.t + height - m.b) / 2}) rotate(-90)" text-anchor="middle">${AXES[yk].label}</text>`);
+  const q = norm($("ssearch").value.trim());
+  const found = q ? rows.filter((r) => norm(r.name).includes(q)) : [];
+  const order = rows.slice().sort((a, b) => Math.abs(a.y) - Math.abs(b.y));
+  for (const r of order) {
+    const dim = q && !found.includes(r);
+    parts.push(`<circle class="dot${dim ? " dim" : ""}${picked === r.key ? " picked" : ""}" data-key="${esc(r.key)}" cx="${X(r.x).toFixed(1)}" cy="${Y(r.y).toFixed(1)}" r="5" fill="var(${r.y >= 0 ? "--above" : "--below"})"/>`);
+  }
+  // Label the extremes (top 3 and bottom 2) and anyone searched for, never every dot.
+  const byY = rows.slice().sort((a, b) => b.y - a.y);
+  const labelled = new Set((found.length && found.length <= 8 ? found : [...byY.slice(0, 3), ...byY.slice(-2)]));
+  for (const r of labelled) {
+    const left = X(r.x) > width * 0.75;
+    parts.push(`<text class="label" x="${X(r.x) + (left ? -8 : 8)}" y="${Y(r.y) + 4}" text-anchor="${left ? "end" : "start"}">${esc(r.name)}</text>`);
+  }
+  svg.innerHTML = parts.join("");
+  const byKey = new Map(rows.map((r) => [r.key, r]));
+  function showTip(circle) {
+    const r = byKey.get(circle.dataset.key);
+    if (!r) return;
+    tip.innerHTML = `<b>${esc(r.name)} <span>${esc(r.team)}</span></b>` +
+      `${AXES[yk].label}: <b style="display:inline" class="${cls(r.y)}">${AXES[yk].fmt(r.y)}</b><br>` +
+      `<span>${AXES[xk].label}: ${AXES[xk].fmt(r.x)} · ${fmt.three(r.ppa)} pts/att · ${r.gp} games</span>`;
+    tip.style.display = "block";
+    const scale = svg.getBoundingClientRect().width / width;
+    const cx = +circle.getAttribute("cx") * scale, cy = +circle.getAttribute("cy") * scale;
+    const w = tip.offsetWidth, ww = wrap.clientWidth;
+    tip.style.left = Math.max(0, Math.min(ww - w, cx + 12 > ww - w ? cx - w - 12 : cx + 12)) + "px";
+    tip.style.top = Math.max(0, cy - tip.offsetHeight - 10) + "px";
+  }
+  svg.onpointerover = (e) => { if (e.target.classList.contains("dot")) showTip(e.target); };
+  svg.onpointerout = (e) => { if (e.target.classList.contains("dot") && !picked) tip.style.display = "none"; };
+  svg.onclick = (e) => {
+    if (e.target.classList.contains("dot")) { picked = e.target.dataset.key; drawScatter(); showTip(svg.querySelector(`circle[data-key="${CSS.escape(picked)}"]`)); }
+    else { picked = null; tip.style.display = "none"; drawScatter(); }
+  };
+}
+
+async function start() {
+  setupTabs();
+  try {
+    const response = await fetch("data.json", { cache: "no-cache" });
+    if (!response.ok) throw new Error(response.status);
+    DATA = await response.json();
+  } catch (e) {
+    $("tiles").innerHTML = `<p class="error">Couldn't load the numbers (${esc(e.message)}). Try again in a minute.</p>`;
+    return;
+  }
+  renderHeader(DATA);
+  renderLeaders(DATA);
+  renderMates(DATA);
+  renderNights(DATA);
+  ["sx", "sy", "sall"].forEach((id) => $(id).addEventListener("change", () => { picked = null; $("tip").style.display = "none"; drawScatter(); }));
+  $("ssearch").addEventListener("input", drawScatter);
+  let resize;
+  window.addEventListener("resize", () => { clearTimeout(resize); resize = setTimeout(drawScatter, 150); });
+  if (document.querySelector("#scatter.active")) drawScatter();
+}
+start();
+</script>
+</body>
+</html>
