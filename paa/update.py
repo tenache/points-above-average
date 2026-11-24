@@ -2,10 +2,12 @@
 
     python -m paa.update              # fetch what's new, then build site/data.json
     python -m paa.update --no-fetch   # build from data/ only
+    python -m paa.update --no-fetch --reparse --cache cache   # parse saved games again, from cached pages
 """
 
 import argparse
 import json
+import os
 from datetime import datetime, timezone
 from pathlib import Path
 
@@ -38,11 +40,27 @@ def months_to_check(saved_ids, today):
     return months
 
 
+def write_json(path, value, **options):
+    """Write to a temporary file, then rename, so a crash never leaves half a file."""
+    temporary = path.with_suffix(".tmp")
+    temporary.write_text(json.dumps(value, **options), encoding="utf-8")
+    os.replace(temporary, path)
+
+
 def load_games():
     return [json.loads(p.read_text(encoding="utf-8")) for p in sorted((DATA / "games").glob("*.json"))]
 
 
+def save_game(fetcher, gid):
+    game = parse.game(fetcher.get(fetch.pbp_path(gid)), gid)
+    if game["unparsed"]:
+        print(f"{gid}: free throws without 'n of m': {game['unparsed']}")
+    write_json(DATA / "games" / f"{gid}.json", game, indent=1, sort_keys=True, ensure_ascii=False)
+
+
 def fetch_new(fetcher, max_games, log=print):
+    """Fetch the games played since the last run. A game that fails is skipped and
+    tried again next run; the others are still saved, and the run fails at the end."""
     games_dir = DATA / "games"
     games_dir.mkdir(parents=True, exist_ok=True)
     saved = {p.stem for p in games_dir.glob("*.json")}
@@ -50,22 +68,38 @@ def fetch_new(fetcher, max_games, log=print):
     played = []
     for month in months_to_check(saved, today):
         played += parse.game_ids(fetcher.get(fetch.schedule_path(SEASON_END_YEAR, month), use_cache=False))
+    if saved and max(saved) not in played:
+        # The latest saved game's month is always checked, so a working parser must see it.
+        raise RuntimeError(f"the schedule pages don't list {max(saved)}: has Basketball-Reference's layout changed?")
     new = [gid for gid in played if gid not in saved]
     log(f"{len(played)} games played in the months checked, {len(new)} new")
+    failed = []
     for gid in new[:max_games]:
-        game = parse.game(fetcher.get(fetch.pbp_path(gid)), gid)
-        if game["unparsed"]:
-            log(f"{gid}: free throws without 'n of m': {game['unparsed']}")
-        (games_dir / f"{gid}.json").write_text(json.dumps(game, indent=1, sort_keys=True), encoding="utf-8")
+        try:
+            save_game(fetcher, gid)
+        except RuntimeError:
+            raise  # rate limited: stop asking
+        except Exception as error:  # noqa: BLE001 - one bad page mustn't block the rest
+            failed.append(f"{gid}: {error}")
     if len(new) > max_games:
         log(f"stopped after {max_games} games; run again for the remaining {len(new) - max_games}")
     totals = parse.season_totals(fetcher.get(fetch.totals_path(SEASON_END_YEAR), use_cache=False))
     names = {pid: t["name"] for pid, t in totals.items()}
-    (DATA / "players.json").write_text(json.dumps(names, indent=1, sort_keys=True, ensure_ascii=False),
-                                       encoding="utf-8")
-    (DATA / "totals.json").write_text(json.dumps(totals, indent=1, sort_keys=True, ensure_ascii=False),
-                                      encoding="utf-8")
-    return len(new) - max_games if len(new) > max_games else 0
+    write_json(DATA / "players.json", names, indent=1, sort_keys=True, ensure_ascii=False)
+    write_json(DATA / "totals.json", totals, indent=1, sort_keys=True, ensure_ascii=False)
+    return failed
+
+
+def reparse(fetcher, log=print):
+    """Parse every saved game again (after a parser fix), from cached pages when there are any."""
+    failed = []
+    for path in sorted((DATA / "games").glob("*.json")):
+        try:
+            save_game(fetcher, path.stem)
+        except Exception as error:  # noqa: BLE001
+            failed.append(f"{path.stem}: {error}")
+    log(f"parsed {len(list((DATA / 'games').glob('*.json')))} saved games again")
+    return failed
 
 
 def rounded(value):
@@ -80,6 +114,8 @@ def rounded(value):
 
 def build(log=print):
     games = load_games()
+    if not games:
+        raise SystemExit("no games in data/: nothing to publish")
     names_file, totals_file = DATA / "players.json", DATA / "totals.json"
     names = json.loads(names_file.read_text(encoding="utf-8")) if names_file.exists() else {}
     totals = json.loads(totals_file.read_text(encoding="utf-8")) if totals_file.exists() else {}
@@ -94,7 +130,7 @@ def build(log=print):
         "updated": datetime.now(timezone.utc).isoformat(timespec="minutes"),
         "season": SEASON_LABEL,
         "games": len(games),
-        "last_night": max(nights) if nights else None,
+        "last_night": max(nights),
         "league_ppa": league,
         "min_ppg": stats.SEASON_MIN_PPG,
         "min_night_pts": stats.NIGHT_MIN_PTS,
@@ -104,10 +140,8 @@ def build(log=print):
         "check": {"players_checked": len(totals), "mismatches": problems},
     }
     SITE.mkdir(exist_ok=True)
-    (SITE / "data.json").write_text(json.dumps(rounded(page), ensure_ascii=False, separators=(",", ":")),
-                                    encoding="utf-8")
-    log(f"built site/data.json: {len(games)} games, league {league:.4f} points per attempt"
-        if league else "built site/data.json: no games yet")
+    write_json(SITE / "data.json", rounded(page), ensure_ascii=False, separators=(",", ":"))
+    log(f"built site/data.json: {len(games)} games, league {league:.4f} points per attempt")
     return page
 
 
@@ -115,13 +149,20 @@ def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument("--no-fetch", action="store_true", help="build from data/ only")
     parser.add_argument("--max-games", type=int, default=400, help="new games to fetch in one run")
+    parser.add_argument("--reparse", action="store_true", help="parse every saved game again")
     parser.add_argument("--cache", help="folder that keeps fetched pages between runs")
     args = parser.parse_args()
+    fetcher = fetch.Fetcher(cache_dir=args.cache)
+    failed = []
+    if args.reparse:
+        failed += reparse(fetcher)
     if not args.no_fetch:
-        fetcher = fetch.Fetcher(cache_dir=args.cache)
-        fetch_new(fetcher, args.max_games)
+        failed += fetch_new(fetcher, args.max_games)
+    if fetcher.requests_made:
         print(f"{fetcher.requests_made} requests to Basketball-Reference")
     build()
+    if failed:
+        raise SystemExit(f"{len(failed)} games failed and will be tried again next run: {failed}")
 
 
 if __name__ == "__main__":
