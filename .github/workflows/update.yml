@@ -2,62 +2,99 @@ name: Update and publish
 
 on:
   schedule:
-    - cron: "30 9 * * *"  # every morning, after the last West Coast game is final
+    - cron: "30 9 * * *"  # every morning, 3+ hours after the last West Coast game ends
   workflow_dispatch:
   push:
     branches: [main]
+  pull_request:
 
-permissions:
-  contents: write
-  pages: write
-  id-token: write
-
-concurrency:
-  group: update
-  cancel-in-progress: false
+permissions: {}
 
 jobs:
-  update:
+  test:
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
-    environment:
-      name: github-pages
-      url: ${{ steps.deploy.outputs.page_url }}
+    timeout-minutes: 10
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v4
-
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@v7
         with:
-          python-version: "3.12"
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
           cache: pip
-
       - run: pip install -r requirements.txt
-
       - run: python -m pytest -q
 
-      - name: Fetch new games and build the page's data
-        run: |
-          if [ "${{ github.event_name }}" = "push" ]; then
-            python -m paa.update --no-fetch
-          else
-            python -m paa.update
-          fi
-
-      - name: Save the new games
-        if: github.event_name != 'push'
+  # Fetches the new games and commits them. Only this job can write to the repo.
+  update:
+    if: github.event_name != 'push' && github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    permissions:
+      contents: write
+    concurrency:
+      group: fetch
+      cancel-in-progress: false
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - run: python -m pytest -q
+      - name: Fetch new games
+        # A game that fails is skipped and the step fails at the end; the others are kept.
+        run: python -m paa.update
+      - name: Save the games fetched so far
+        if: ${{ !cancelled() }}
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git add data
           if git diff --cached --quiet; then
             echo "No new games."
-          else
-            git commit -m "Games through $(date -u -d yesterday +%Y-%m-%d)"
-            git push
+            exit 0
           fi
+          latest=$(ls data/games | sort | tail -1)
+          git commit -m "Games through ${latest:0:4}-${latest:4:2}-${latest:6:2}"
+          git pull --rebase
+          git push
 
-      - uses: actions/upload-pages-artifact@v3
+  # Builds the page from the tip of main (with the games just saved) and publishes it.
+  deploy:
+    needs: update
+    if: ${{ !cancelled() && github.event_name != 'pull_request' && github.ref == 'refs/heads/main' && vars.PAGES_ENABLED == 'true' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      pages: write
+      id-token: write
+    concurrency:
+      group: pages
+      cancel-in-progress: false
+    environment:
+      name: github-pages
+      url: ${{ steps.deploy.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: "3.14"
+          cache: pip
+      - run: pip install -r requirements.txt
+      - name: Build the page's data
+        # Exits with an error when there are no games, so an empty page is never published.
+        run: python -m paa.update --no-fetch
+      - uses: actions/upload-pages-artifact@v5
         with:
           path: site
-
       - id: deploy
-        uses: actions/deploy-pages@v4
+        uses: actions/deploy-pages@v5
