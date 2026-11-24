@@ -27,16 +27,19 @@ def test_the_examples_with_an_average_of_one():
     assert [r["id"] for r in rows][0] == "one"
 
 
-def test_leaderboard_minimum_is_points_per_game():
-    games = [game(f"2026110{d}0HHH", "AAA", "HHH", {
-        "bench": line("AAA", 6 if d < 3 else 0, 4), "low": line("AAA", 5, 3)}) for d in (1, 2, 3)]
-    _, rows = stats.season(games)
-    by_id = {r["id"]: r for r in rows}
-    assert by_id["bench"]["ppg"] == 4 and not by_id["bench"]["qualified"]
-    assert by_id["low"]["ppg"] == 5 and not by_id["low"]["qualified"]
-    games.append(game("202611040HHH", "AAA", "HHH", {"low": line("AAA", 9, 5)}))
-    _, rows = stats.season(games)
-    assert {r["id"]: r for r in rows}["low"]["qualified"]  # 24 points in 4 games
+def test_leaderboard_minimum_is_points_per_team_game():
+    # Thomas's example: 45 points in game 1, then out. 45 / 9 team games = 5 (still on);
+    # 45 / 10 = 4.5 (off).
+    first = game("202611010HHH", "AAA", "HHH", {"star": line("AAA", 45, 20), "mate": line("AAA", 10, 10)})
+    rest = [game(f"202611{d:02d}0HHH", "AAA", "HHH", {"mate": line("AAA", 10, 10)}) for d in range(2, 11)]
+    _, rows = stats.season([first] + rest[:8])
+    star = {r["id"]: r for r in rows}["star"]
+    assert (star["team_gp"], star["qualified"]) == (9, True)
+    _, rows = stats.season([first] + rest)
+    star = {r["id"]: r for r in rows}["star"]
+    assert (star["gp"], star["team_gp"], star["pts_per_team_game"], star["qualified"]) == (1, 10, 4.5, False)
+    mates = {r["id"]: r for r in stats.versus_teammates([first] + rest)}
+    assert not mates["star"]["qualified"] and mates["star"]["team_gp"] == 10
 
 
 def test_players_without_attempts_count_games_but_get_no_row():

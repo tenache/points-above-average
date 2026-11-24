@@ -12,14 +12,14 @@ An **attempt** is a field-goal attempt or a trip to the free-throw line:
 
 - Two or three free throws in one trip count as one attempt, so 2/2 from the line equals a made 2.
 - An and-one is one attempt: the extra free throw adds a point to the shot.
-- Technical and flagrant free throws are left out, points included: they aren't the player's own shot. So is any other lone free throw that isn't an and-one (delay of game, defensive three seconds, a take foul, an away-from-play foul): the team picks who shoots it.
+- Technical and flagrant free throws are left out, points included: they aren't the player's own shot. So are lone free throws after a take foul, an away-from-play foul, delay of game or defensive three seconds: the team picks who shoots them. A lone free throw after a loose-ball foul is the fouled player's own: one attempt.
 - Turnovers don't count.
 
 The league average is total points over total attempts, across every player this season, counted the same way.
 
 ## What the page shows
 
-- **Leaderboard**: players with at least 6 points per game, so a good bench player can be compared with a star.
+- **Leaderboard**: players with at least 5 points per *team* game (his season points over the games his team has played), so a good bench player can be compared with a star, and a player who stops playing drops off: 45 points in game 1 stays on the board for 9 team games.
 - **Versus teammates**: the player's points per attempt minus the rest of his team's.
 - **Last night**: who did especially well and who did badly, among players with at least 10 points in the game.
 - **Scatter plots**: attempts against PAA per attempt, for every player.

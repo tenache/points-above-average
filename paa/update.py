@@ -44,7 +44,9 @@ def write_json(path, value, **options):
 
 
 def load_games():
-    return [json.loads(p.read_text(encoding="utf-8")) for p in sorted((DATA / "games").glob("*.json"))]
+    """This season's saved games (an earlier season's files are left alone)."""
+    return [json.loads(p.read_text(encoding="utf-8"))
+            for p in sorted((DATA / "games").glob("*.json")) if this_season(p.stem)]
 
 
 def save_game(fetcher, gid):
@@ -55,7 +57,7 @@ def save_game(fetcher, gid):
 
 
 def this_season(game_id):
-    return game_id[:8] >= f"{SEASON_END_YEAR - 1}1001"
+    return f"{SEASON_END_YEAR - 1}1001" <= game_id[:8] < f"{SEASON_END_YEAR}1001"
 
 
 def skippable(error):
@@ -106,6 +108,8 @@ def reparse(cache_dir, log=print):
     fetcher = fetch.Fetcher(cache_dir=cache_dir, offline=True)
     failed = []
     for path in sorted((DATA / "games").glob("*.json")):
+        if not this_season(path.stem):
+            continue
         try:
             save_game(fetcher, path.stem)
         except (ValueError, FileNotFoundError) as error:
@@ -144,7 +148,7 @@ def build(log=print):
         "games": len(games),
         "last_night": max(nights),
         "league_ppa": league,
-        "min_ppg": stats.SEASON_MIN_PPG,
+        "min_pts_per_team_game": stats.SEASON_MIN_PTS_PER_TEAM_GAME,
         "min_night_pts": stats.NIGHT_MIN_PTS,
         "players": season_rows,
         "teammates": stats.versus_teammates(games, names),

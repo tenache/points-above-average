@@ -242,18 +242,18 @@
    "trips": 4
   },
   "lylestr01": {
-   "att": 7,
+   "att": 8,
    "fga": 6,
    "fgm2": 1,
    "fgm3": 2,
-   "fta": 2,
+   "fta": 3,
    "ftm": 1,
    "name": "T. Lyles",
-   "other_fta": 1,
+   "other_fta": 0,
    "other_ftm": 0,
    "pts": 9,
    "team": "MIN",
-   "trips": 1
+   "trips": 2
   },
   "mcdanja02": {
    "att": 14,

@@ -270,18 +270,18 @@
    "trips": 2
   },
   "poeltja01": {
-   "att": 2,
+   "att": 3,
    "fga": 1,
    "fgm2": 1,
    "fgm3": 0,
-   "fta": 2,
-   "ftm": 0,
+   "fta": 3,
+   "ftm": 1,
    "name": "J. Poeltl",
-   "other_fta": 1,
-   "other_ftm": 1,
-   "pts": 2,
+   "other_fta": 0,
+   "other_ftm": 0,
+   "pts": 3,
    "team": "TOR",
-   "trips": 1
+   "trips": 2
   },
   "powelno01": {
    "att": 13,

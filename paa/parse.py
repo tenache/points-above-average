@@ -64,7 +64,10 @@ def game(pbp_html, game_id):
     # with no field-goal attempt in between. Any other lone free throw (technical, delay of game,
     # take foul, away-from-play foul...) is taken by whoever the team picks: not his own shot.
     made_by = None  # who made the latest field-goal attempt of the period, if it went in
-    and_one = None  # that shooter, once he has drawn a foul on the play
+    and_one = None  # that shooter, once he has drawn a shooting foul on the play
+    # A loose-ball foul during a teammate's made basket gives the fouled player one free throw
+    # of his own: (period, clock, player) of the latest loose-ball foul drawn.
+    loose_ball = None
     period = 0
     unparsed = []
 
@@ -94,14 +97,21 @@ def game(pbp_html, game_id):
             if link is None:
                 continue
             first = next((c for c in cell.contents if not (isinstance(c, str) and not c.strip())), None)
-            if " foul by " in f" {text.lower()}":
-                # Fouls say nothing about who played or for whom: some sit in the column of the
-                # team that drew them (shooting, personal), others in the fouler's (offensive,
-                # loose ball, technical, even from the bench). They only matter for and-ones.
+            lowered = text.lower()
+            if " foul by " in f" {lowered}" or "ejected" in lowered:
+                # Fouls and ejections say nothing about who played or for whom: some fouls sit in
+                # the column of the team that drew them (shooting, personal), others in the
+                # fouler's (offensive, loose ball, technical, even from the bench). They only
+                # matter for and-ones and loose-ball free throws.
                 links = cell.find_all("a", href=PLAYER_HREF)
-                if made_by and "drawn by" in text and len(links) > 1 and _player_id(links[1]) == made_by:
+                drawn = _player_id(links[1]) if "drawn by" in text and len(links) > 1 else None
+                if lowered.startswith("shooting foul") and made_by and drawn == made_by:
                     and_one = made_by
+                if lowered.startswith("loose ball foul") and drawn:
+                    loose_ball = (period, clock, drawn)
                 continue
+            if lowered.startswith("turnover"):
+                made_by = and_one = None
             # Everyone else named first in a column plays for that team (shooter, rebounder,
             # turnover...), and so do both players in a substitution.
             same_team = cell.find_all("a", href=PLAYER_HREF)[:2] if "enters the game for" in text else []
@@ -138,20 +148,32 @@ def game(pbp_html, game_id):
             if throw.group(3) is None:
                 unparsed.append(rest)
             number, total = (int(throw.group(3)), int(throw.group(4))) if throw.group(3) else (1, 1)
-            if total == 1 and and_one != pid:
+            own_lone = and_one == pid or loose_ball == (period, clock, pid)
+            if total == 1 and not own_lone:
                 stats["other_fta"] += 1
                 stats["other_ftm"] += made
                 continue
             stats["fta"] += 1
             stats["ftm"] += made
             stats["pts"] += made
-            if total == 1:
+            if total == 1 and and_one == pid:
                 and_one = None  # the and-one's point goes to the shot: no new attempt
             elif number == 1:
+                loose_ball = None if total == 1 else loose_ball
                 stats["trips"] += 1  # a trip of two or three is one attempt
                 stats["att"] += 1
     for pid, tally in votes.items():
         players[pid]["team"] = max(tally, key=tally.get)
+    players = {pid: p for pid, p in players.items() if p["team"]}
+    # A page with missing plays would be saved wrong for good: check it adds up to the final score.
+    scores = [s.get_text(strip=True) for s in (scorebox.select("div.score") if scorebox else [])]
+    if len(scores) == 2 and all(x.isdigit() for x in scores):
+        counted = {away: 0, home: 0}
+        for p in players.values():
+            counted[p["team"]] = counted.get(p["team"], 0) + p["pts"] + p["other_ftm"]
+        if [counted[away], counted[home]] != [int(x) for x in scores]:
+            raise ValueError(f"{game_id}: plays add up to {counted[away]}-{counted[home]}, "
+                             f"the final score is {scores[0]}-{scores[1]}")
     return {"id": game_id, "away": away, "home": home, "players": players, "unparsed": unparsed}
 
 

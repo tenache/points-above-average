@@ -46,18 +46,18 @@
    "trips": 0
   },
   "collijo01": {
-   "att": 15,
+   "att": 16,
    "fga": 15,
    "fgm2": 5,
    "fgm3": 2,
-   "fta": 0,
+   "fta": 1,
    "ftm": 0,
    "name": "J. Collins",
-   "other_fta": 1,
+   "other_fta": 0,
    "other_ftm": 0,
    "pts": 16,
    "team": "DET",
-   "trips": 0
+   "trips": 1
   },
   "cunnica01": {
    "att": 23,

@@ -4,18 +4,18 @@
  "id": "202611060ATL",
  "players": {
   "alexani01": {
-   "att": 24,
+   "att": 25,
    "fga": 20,
    "fgm2": 3,
    "fgm3": 4,
-   "fta": 8,
-   "ftm": 8,
+   "fta": 9,
+   "ftm": 9,
    "name": "N. Alexander-Walker",
-   "other_fta": 2,
-   "other_ftm": 2,
-   "pts": 26,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 27,
    "team": "ATL",
-   "trips": 4
+   "trips": 5
   },
   "aytonde01": {
    "att": 5,
