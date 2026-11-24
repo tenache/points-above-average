@@ -141,3 +141,10 @@ def test_a_night_row_carries_the_game_s_points_above_average():
     rows = stats.nights([game("202611010HHH", "AAA", "HHH", {"a": line("AAA", 12, 6), "h": line("HHH", 6, 6)})])
     row = {r["id"]: r for r in rows["2026-11-01"]["rows"]}["a"]
     assert row["paa"] == 12 - 1.5 * 6
+
+
+def test_a_night_is_ordered_by_the_game_s_points_above_average():
+    # League 1.0 that night. Volume: 20 on 10 (+10, rate +1.0). Efficient: 6 on 2 (+4, rate +2.0).
+    rows = stats.nights([game("202611010HHH", "AAA", "HHH", {"vol": line("AAA", 20, 10), "eff": line("AAA", 6, 2),
+                                                             "h": line("HHH", 0, 14)})])["2026-11-01"]["rows"]
+    assert [r["id"] for r in rows] == ["vol", "eff", "h"]

@@ -135,7 +135,7 @@ def nights(games, names=None):
                              "opp": opponent, "game": g["id"], "pts": p["pts"], "att": p["att"],
                              "ppa": ppa, "paa_pa": ppa - league, "paa": p["pts"] - league * p["att"],
                              "qualified": p["pts"] >= NIGHT_MIN_PTS})
-        rows.sort(key=lambda r: -r["paa_pa"])
+        rows.sort(key=lambda r: -r["paa"])
         out[date] = {"league_ppa": league, "rows": rows}
     return out
 

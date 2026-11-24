@@ -372,7 +372,7 @@ function renderHeader(d) {
   $("tiles").innerHTML = [
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
     ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pg)}">${fmt.signed2(leader.paa_pg)}</span><div class="note">a game (${fmt.signed(leader.paa_pa)} per attempt), ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
-    [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa_pa)}">${fmt.signed(night.paa_pa)}</span><div class="note">${night.pts} points on ${plural(night.att, "attempt")}</div>` : "—"],
+    [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa)}">${fmt.signed1(night.paa)}</span><div class="note">${night.pts} points on ${plural(night.att, "attempt")} (${fmt.signed(night.paa_pa)} per attempt)</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
   const latest = new Date(d.last_night + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
   $("through").textContent = `Games through ${latest}.`;
@@ -448,10 +448,10 @@ function renderNights(d) {
     const rows = night ? night.rows : [];
     $("night-title").textContent = date === dates[0] ? nightLabel(date) : label(date);
     $("night-note").textContent = night
-      ? `Players with at least ${d.min_night_pts} points in the game, against the league average through that night (${fmt.three(night.league_ppa)} points per attempt).`
+      ? `Players with at least ${d.min_night_pts} points in the game, ranked by their points above average in it, against the league average through that night (${fmt.three(night.league_ppa)} points per attempt).`
       : "";
-    table("night-best", rows.filter((r) => r.paa_pa > 0).slice(0, 10));
-    table("night-worst", rows.filter((r) => r.paa_pa < 0).reverse().slice(0, 10));
+    table("night-best", rows.filter((r) => r.paa > 0).slice(0, 10));
+    table("night-worst", rows.filter((r) => r.paa < 0).reverse().slice(0, 10));
     const i = dates.indexOf(date);
     $("night-prev").disabled = i >= dates.length - 1;
     $("night-next").disabled = i <= 0;
