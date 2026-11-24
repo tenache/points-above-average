@@ -4,18 +4,18 @@
  "id": "202611100PHO",
  "players": {
   "bookede01": {
-   "att": 16,
+   "att": 15,
    "fga": 14,
    "fgm2": 4,
    "fgm3": 2,
-   "fta": 4,
-   "ftm": 3,
+   "fta": 3,
+   "ftm": 2,
    "name": "D. Booker",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 17,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 16,
    "team": "PHO",
-   "trips": 2
+   "trips": 1
   },
   "bouyeja01": {
    "att": 3,

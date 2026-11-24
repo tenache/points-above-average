@@ -186,18 +186,18 @@
    "trips": 1
   },
   "niangge01": {
-   "att": 9,
+   "att": 8,
    "fga": 7,
    "fgm2": 0,
    "fgm3": 1,
-   "fta": 3,
+   "fta": 2,
    "ftm": 2,
    "name": "G. Niang",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 5,
    "team": "GSW",
-   "trips": 2
+   "trips": 1
   },
   "podzibr01": {
    "att": 17,

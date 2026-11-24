@@ -102,18 +102,18 @@
    "trips": 0
   },
   "cardwdy01": {
-   "att": 4,
+   "att": 3,
    "fga": 3,
    "fgm2": 0,
    "fgm3": 0,
-   "fta": 1,
-   "ftm": 1,
+   "fta": 0,
+   "ftm": 0,
    "name": "D. Cardwell",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 1,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 0,
    "team": "SAC",
-   "trips": 1
+   "trips": 0
   },
   "carteje01": {
    "att": 1,

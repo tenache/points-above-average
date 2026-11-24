@@ -46,18 +46,18 @@
    "trips": 0
   },
   "bryanth01": {
-   "att": 6,
+   "att": 5,
    "fga": 5,
    "fgm2": 1,
    "fgm3": 2,
-   "fta": 1,
-   "ftm": 1,
+   "fta": 0,
+   "ftm": 0,
    "name": "T. Bryant",
-   "other_fta": 2,
-   "other_ftm": 2,
-   "pts": 9,
+   "other_fta": 3,
+   "other_ftm": 3,
+   "pts": 8,
    "team": "CLE",
-   "trips": 1
+   "trips": 0
   },
   "hardeja01": {
    "att": 10,

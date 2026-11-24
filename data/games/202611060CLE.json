@@ -158,18 +158,18 @@
    "trips": 1
   },
   "maxeyty01": {
-   "att": 18,
+   "att": 17,
    "fga": 15,
    "fgm2": 3,
    "fgm3": 2,
-   "fta": 6,
-   "ftm": 5,
+   "fta": 5,
+   "ftm": 4,
    "name": "T. Maxey",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 17,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 16,
    "team": "PHI",
-   "trips": 3
+   "trips": 2
   },
   "merrisa01": {
    "att": 3,

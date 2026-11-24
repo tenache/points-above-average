@@ -158,18 +158,18 @@
    "trips": 0
   },
   "kornelu01": {
-   "att": 6,
+   "att": 5,
    "fga": 3,
    "fgm2": 2,
    "fgm3": 0,
-   "fta": 5,
+   "fta": 4,
    "ftm": 3,
    "name": "L. Kornet",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 7,
    "team": "SAS",
-   "trips": 3
+   "trips": 2
   },
   "sengual01": {
    "att": 23,

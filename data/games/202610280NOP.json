@@ -214,18 +214,18 @@
    "trips": 0
   },
   "murphtr02": {
-   "att": 8,
+   "att": 7,
    "fga": 7,
    "fgm2": 0,
    "fgm3": 2,
-   "fta": 1,
+   "fta": 0,
    "ftm": 0,
    "name": "T. Murphy",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 6,
    "team": "NOP",
-   "trips": 1
+   "trips": 0
   },
   "murrade01": {
    "att": 12,

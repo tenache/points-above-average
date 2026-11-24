@@ -256,18 +256,18 @@
    "trips": 0
   },
   "podzibr01": {
-   "att": 12,
+   "att": 11,
    "fga": 8,
    "fgm2": 0,
    "fgm3": 3,
-   "fta": 7,
-   "ftm": 6,
+   "fta": 6,
+   "ftm": 5,
    "name": "B. Podziemski",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 15,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 14,
    "team": "GSW",
-   "trips": 4
+   "trips": 3
   },
   "poolejo01": {
    "att": 11,

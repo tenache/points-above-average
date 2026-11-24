@@ -158,18 +158,18 @@
    "trips": 2
   },
   "nesmiaa01": {
-   "att": 7,
+   "att": 6,
    "fga": 6,
    "fgm2": 1,
    "fgm3": 0,
-   "fta": 1,
+   "fta": 0,
    "ftm": 0,
    "name": "A. Nesmith",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 2,
    "team": "IND",
-   "trips": 1
+   "trips": 0
   },
   "omierno01": {
    "att": 3,

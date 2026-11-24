@@ -4,18 +4,18 @@
  "id": "202611020GSW",
  "players": {
   "bassech01": {
-   "att": 13,
+   "att": 12,
    "fga": 10,
    "fgm2": 7,
    "fgm3": 0,
-   "fta": 6,
-   "ftm": 5,
+   "fta": 5,
+   "ftm": 4,
    "name": "C. Bassey",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 19,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 18,
    "team": "GSW",
-   "trips": 3
+   "trips": 2
   },
   "bookede01": {
    "att": 21,

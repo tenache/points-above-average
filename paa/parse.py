@@ -11,10 +11,6 @@ FIELD_GOAL = re.compile(r"^(makes|misses) ([23])-pt\b")
 FREE_THROW = re.compile(r"^(makes|misses) ([a-z ]*?)free throw(?: (\d) of (\d))?")
 # Free throws that aren't the shooter's own scoring chance: left out, points included.
 NOT_OWN_SHOT = ("technical", "flagrant")
-# Fouls after which the lone free throw is taken by whoever the team picks, logged as a plain
-# "free throw 1 of 1": technicals (defensive three seconds, delay of game...), take fouls and
-# away-from-play fouls.
-OTHER_SHOOTER_FOUL = re.compile(r"\btech(nical)? foul\b|\btake foul\b|\baway from play foul\b")
 
 
 def game_ids(schedule_html):
@@ -63,9 +59,12 @@ def game(pbp_html, game_id):
         raise ValueError(f"{game_id}: no play-by-play table")
 
     players = {}
-    votes = {}  # player -> {team: weight}; his team is decided at the end of the game
-    pending_other = {}  # (period, clock) -> lone free throws someone other than a shooter takes
-    last_attempt = None  # (player, made, period) of the latest field-goal attempt, to spot and-ones
+    votes = {}  # player -> {team: plays}; his team is the column he acts in most
+    # And-ones: a made field goal, then a foul drawn by the same shooter, then his lone free throw,
+    # with no field-goal attempt in between. Any other lone free throw (technical, delay of game,
+    # take foul, away-from-play foul...) is taken by whoever the team picks: not his own shot.
+    made_by = None  # who made the latest field-goal attempt of the period, if it went in
+    and_one = None  # that shooter, once he has drawn a foul on the play
     period = 0
     unparsed = []
 
@@ -82,26 +81,26 @@ def game(pbp_html, game_id):
             # Each period opens with a header row that has an id (q1, q2...); column headers don't.
             if row.get("id"):
                 period += 1
+                made_by = and_one = None
             continue
         cells = row.find_all("td")
         if len(cells) != 6:
             continue
         clock = cells[0].get_text(strip=True)
-        for index, team, other in ((1, away, home), (5, home, away)):
+        for index, team in ((1, away), (5, home)):
             cell = cells[index]
             text = cell.get_text(" ", strip=True)
-            lowered = text.lower()
-            if OTHER_SHOOTER_FOUL.search(lowered) and "rescinded" not in lowered:
-                pending_other[(period, clock)] = pending_other.get((period, clock), 0) + 1
             link = cell.find("a", href=PLAYER_HREF)
             if link is None:
                 continue
             first = next((c for c in cell.contents if not (isinstance(c, str) and not c.strip())), None)
-            if " foul by " in f" {lowered}":
-                # Fouls sit in the column of the team that drew them, so the fouler plays for
-                # the other team. A weak vote: only used if he does nothing else all game.
-                if first is not link:
-                    vote(link, other, 0.001)
+            if " foul by " in f" {text.lower()}":
+                # Fouls say nothing about who played or for whom: some sit in the column of the
+                # team that drew them (shooting, personal), others in the fouler's (offensive,
+                # loose ball, technical, even from the bench). They only matter for and-ones.
+                links = cell.find_all("a", href=PLAYER_HREF)
+                if made_by and "drawn by" in text and len(links) > 1 and _player_id(links[1]) == made_by:
+                    and_one = made_by
                 continue
             # Everyone else named first in a column plays for that team (shooter, rebounder,
             # turnover...), and so do both players in a substitution.
@@ -128,34 +127,28 @@ def game(pbp_html, game_id):
                 if made:
                     stats["pts"] += int(shot.group(2))
                     stats["fgm" + shot.group(2)] += 1
-                last_attempt = (pid, made, period)
+                made_by = pid if made else None
+                and_one = None
                 continue
             kind = throw.group(2)
             if any(word in kind for word in NOT_OWN_SHOT):
                 stats["other_fta"] += 1
                 stats["other_ftm"] += made
-                if "technical" in kind and pending_other.get((period, clock)):
-                    pending_other[(period, clock)] -= 1
                 continue
             if throw.group(3) is None:
                 unparsed.append(rest)
             number, total = (int(throw.group(3)), int(throw.group(4))) if throw.group(3) else (1, 1)
-            if total == 1 and last_attempt != (pid, True, period) and pending_other.get((period, clock)):
-                # A lone free throw after a technical, a defensive three seconds, a take foul or an
-                # away-from-play foul: the team picks the shooter, so it isn't his own shot.
-                pending_other[(period, clock)] -= 1
+            if total == 1 and and_one != pid:
                 stats["other_fta"] += 1
                 stats["other_ftm"] += made
                 continue
             stats["fta"] += 1
             stats["ftm"] += made
             stats["pts"] += made
-            if number != 1:
-                continue
-            if total >= 2 or last_attempt != (pid, True, period):
-                # A trip of two or three is one attempt; so is a lone free throw that isn't
-                # an and-one (an and-one follows his own make, with no shot in between).
-                stats["trips"] += 1
+            if total == 1:
+                and_one = None  # the and-one's point goes to the shot: no new attempt
+            elif number == 1:
+                stats["trips"] += 1  # a trip of two or three is one attempt
                 stats["att"] += 1
     for pid, tally in votes.items():
         players[pid]["team"] = max(tally, key=tally.get)

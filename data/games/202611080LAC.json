@@ -74,18 +74,18 @@
    "trips": 2
   },
   "garlada01": {
-   "att": 17,
+   "att": 16,
    "fga": 11,
    "fgm2": 3,
    "fgm3": 3,
-   "fta": 12,
-   "ftm": 9,
+   "fta": 11,
+   "ftm": 8,
    "name": "D. Garland",
-   "other_fta": 0,
-   "other_ftm": 0,
-   "pts": 24,
+   "other_fta": 1,
+   "other_ftm": 1,
+   "pts": 23,
    "team": "LAC",
-   "trips": 6
+   "trips": 5
   },
   "hachiru01": {
    "att": 13,
