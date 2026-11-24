@@ -213,7 +213,7 @@ footer a { color: inherit; }
           <option value="paa_pa">PAA per attempt (vs the league)</option>
           <option value="diff">Versus his teammates</option>
         </select></label>
-        <label><input type="checkbox" id="sall"> Everyone (not just 6+ points a game)</label>
+        <label><input type="checkbox" id="sall"> Everyone (not just 5+ points per team game)</label>
         <input type="search" id="ssearch" placeholder="Find a player" aria-label="Find a player in the chart">
       </div>
       <div class="chart-wrap" id="chart-wrap"><svg id="chart" role="img" aria-label="Scatter plot of players"></svg><div class="tip" id="tip"></div></div>
@@ -228,6 +228,7 @@ footer a { color: inherit; }
       <p><b>An attempt</b> is a field-goal attempt or one trip to the free-throw line: two or three free throws in a trip count as one attempt, so 2 of 2 from the line is worth the same as a made 2. An and-one is one attempt (the free throw adds a point to the shot). Technical and flagrant free throws are left out, points included. Turnovers don't count.</p>
       <p><b>The league average</b> is every player's points over every player's attempts this season, counted the same way. Last night's numbers use the average through that night, so they don't change later.</p>
       <p><b>Total PAA</b> in the leaderboard is the running total: points − league average × attempts. It rewards volume: a great shooter who shoots a lot piles it up.</p>
+      <p><b>Who's on the boards</b>: players with at least 5 points per team game, his season points over the games his team has played. A good bench player qualifies, and a player who stops playing drops off: 45 points in game 1 stays on for 9 team games.</p>
       <p><b>Versus teammates</b> compares a player with the rest of his team in the games he played, so a player on a bad shooting team doesn't get punished for his teammates, and vice versa. Traded players get one row per team.</p>
       <p class="note" id="check-line"></p>
     </div>
@@ -318,8 +319,8 @@ function sync(container, state, key) {
     x.setAttribute("aria-pressed", String(state.key === key && x.dataset.order === state.dir)));
 }
 function ranked(rows, key) {
-  // Equal values (as shown, to 3 decimals) share a rank: 1, 2, 2, 4...
-  const shown = (r) => Math.round(r[key] * 1000);
+  // Equal values as shown (to 3 decimals) share a rank: 1, 2, 2, 4...
+  const shown = (r) => fmt.signed(r[key]);
   rows.slice().sort((a, b) => b[key] - a[key]).forEach((r, i, sorted) => {
     r.rank = i > 0 && shown(sorted[i - 1]) === shown(r) ? sorted[i - 1].rank : i + 1;
   });
@@ -367,7 +368,7 @@ function renderHeader(d) {
   $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
   $("tiles").innerHTML = [
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
-    ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pa)}">${fmt.signed(leader.paa_pa)}</span><div class="note">${plural(leader.gp, "game")}, ${fmt.one(leader.ppg)} points a game</div>` : "—"],
+    ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pa)}">${fmt.signed(leader.paa_pa)}</span><div class="note">${leader.pts} points in ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
     [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa_pa)}">${fmt.signed(night.paa_pa)}</span><div class="note">${night.pts} points on ${plural(night.att, "attempt")}</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
   const latest = new Date(d.last_night + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
@@ -382,7 +383,7 @@ function renderHeader(d) {
 }
 
 function renderLeaders(d) {
-  $("leaders-note").textContent = `Players with at least ${d.min_ppg} points per game. Click a column to sort.`;
+  $("leaders-note").textContent = `Players with at least ${d.min_pts_per_team_game} points per team game (his points over his team's games this season). Click a column to sort.`;
   const search = $("leaders-search");
   const qualified = ranked(d.players.filter((r) => r.qualified), "paa_pa");
   const state = sortable("leaders-table", [
@@ -392,7 +393,7 @@ function renderLeaders(d) {
     { label: "Total PAA", sort: "paa", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points minus league average × attempts" },
     { label: "Pts / g", sort: "ppg", cell: (r) => fmt.one(r.ppg) },
     { label: "Att / g", sort: "apg", cell: (r) => fmt.one(r.apg) },
-    { label: "Games", sort: "gp", cell: (r) => r.gp },
+    { label: "Games", sort: "gp", cell: (r) => `${r.gp}<span class="team">of ${r.team_gp}</span>`, title: "Games he played, of his team's games" },
   ], () => qualified.filter((r) => matches(r, norm(search.value.trim()))),
   { key: "paa_pa", dir: "desc", page: 25, more: "leaders-more", rankLabel: "PAA per attempt",
     onSort: () => sync(document.querySelector("#leaders .seg"), state, "paa_pa") });
@@ -402,7 +403,7 @@ function renderLeaders(d) {
 }
 
 function renderMates(d) {
-  $("mates-note").textContent = `His points per attempt minus the rest of his team's, in the games he played. At least ${d.min_ppg} points per game.`;
+  $("mates-note").textContent = `His points per attempt minus the rest of his team's, in the games he played. At least ${d.min_pts_per_team_game} points per team game.`;
   const search = $("mates-search");
   const qualified = ranked(d.teammates.filter((r) => r.qualified), "diff");
   const state = sortable("mates-table", [
@@ -411,7 +412,7 @@ function renderMates(d) {
     { label: "His pts / att", sort: "ppa", cell: (r) => fmt.three(r.ppa) },
     { label: "Teammates'", sort: "rest_ppa", cell: (r) => fmt.three(r.rest_ppa) },
     { label: "Pts / g", sort: "ppg", cell: (r) => fmt.one(r.ppg) },
-    { label: "Games", sort: "gp", cell: (r) => r.gp },
+    { label: "Games", sort: "gp", cell: (r) => `${r.gp}<span class="team">of ${r.team_gp}</span>`, title: "Games he played, of his team's games" },
   ], () => qualified.filter((r) => matches(r, norm(search.value.trim()))),
   { key: "diff", dir: "desc", page: 25, more: "mates-more", rankLabel: "the gap to his teammates",
     onSort: () => sync(document.querySelector("#mates .seg"), state, "diff") });
@@ -533,15 +534,15 @@ function drawScatter() {
   // Label the extremes (top 3 and bottom 2) and anyone searched for, never every dot.
   const byY = rows.slice().sort((a, b) => b.y - a.y);
   const labelled = new Set(q ? found.slice(0, 8) : [...byY.slice(0, 3), ...byY.slice(-2)]);
-  // Skip a label that would overlap one already placed (rough box: 7 px per character).
+  // Skip a label that would overlap one already placed (rough box: 6.5 px per character).
   const boxes = [];
   for (const r of labelled) {
-    const w = r.name.length * 7;
-    const left = X(r.x) + 8 + w > width - m.r;
-    const x = left ? X(r.x) - 8 - w : X(r.x) + 8, y = Y(r.y) - 8;
+    const w = r.name.length * 6.5;
+    const left = X(r.x) + 8 + w > width - m.r && X(r.x) - m.l > width - m.r - X(r.x);
+    const x = Math.max(0, Math.min(width - w, left ? X(r.x) - 8 - w : X(r.x) + 8)), y = Y(r.y) - 8;
     if (boxes.some((b) => x < b.x + b.w && b.x < x + w && y < b.y + 16 && b.y < y + 16)) continue;
     boxes.push({ x, y, w });
-    parts.push(`<text class="label" data-key="${esc(r.key)}" x="${X(r.x) + (left ? -8 : 8)}" y="${Y(r.y) + 4}" text-anchor="${left ? "end" : "start"}">${esc(r.name)}</text>`);
+    parts.push(`<text class="label" data-key="${esc(r.key)}" x="${x}" y="${Y(r.y) + 4}">${esc(r.name)}</text>`);
   }
   parts.push(`<text class="zero-label" x="${m.l + 6}" y="${Y(0) - 6}">${yk === "diff" ? "same as teammates" : "league average"}</text>`);
   svg.innerHTML = parts.join("");
@@ -570,11 +571,17 @@ function drawScatter() {
     // Fingers are bigger than dots: pick the nearest dot within 22 px of the tap.
     const box = svg.getBoundingClientRect(), scale = box.width / width;
     const px = (e.clientX - box.left) / scale, py = (e.clientY - box.top) / scale;
-    let best = e.target.classList.contains("label") ? svg.querySelector(`circle[data-key="${CSS.escape(e.target.dataset.key)}"]`) : null;
-    let bestDistance = best ? 0 : 22 / scale;
-    for (const circle of best ? [] : svg.querySelectorAll("circle.dot")) {
-      const d = Math.hypot(+circle.getAttribute("cx") - px, +circle.getAttribute("cy") - py);
-      if (d < bestDistance) { best = circle; bestDistance = d; }
+    const label = [...svg.querySelectorAll("text.label")].find((t) => {
+      const b = t.getBBox();
+      return px >= b.x - 2 && px <= b.x + b.width + 2 && py >= b.y - 2 && py <= b.y + b.height + 2;
+    });
+    let best = label ? svg.querySelector(`circle[data-key="${CSS.escape(label.dataset.key)}"]`) : null;
+    for (const selector of ["circle.dot:not(.dim)", "circle.dot.dim"]) {
+      let bestDistance = 22 / scale;
+      for (const circle of best ? [] : svg.querySelectorAll(selector)) {
+        const d = Math.hypot(+circle.getAttribute("cx") - px, +circle.getAttribute("cy") - py);
+        if (d < bestDistance) { best = circle; bestDistance = d; }
+      }
     }
     if (!best) { closeTip(); return; }
     svg.querySelectorAll(".dot.picked").forEach((c) => c.classList.remove("picked"));
