@@ -60,18 +60,18 @@
    "trips": 2
   },
   "battlja01": {
-   "att": 6,
+   "att": 7,
    "fga": 4,
    "fgm2": 0,
    "fgm3": 1,
-   "fta": 4,
-   "ftm": 3,
+   "fta": 5,
+   "ftm": 4,
    "name": "J. Battle",
-   "other_fta": 1,
-   "other_ftm": 1,
-   "pts": 6,
+   "other_fta": 0,
+   "other_ftm": 0,
+   "pts": 7,
    "team": "TOR",
-   "trips": 2
+   "trips": 3
   },
   "bitadgo01": {
    "att": 3,

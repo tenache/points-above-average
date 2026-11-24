@@ -2,7 +2,9 @@
 
 from collections import defaultdict
 
-SEASON_MIN_PPG = 6  # leaderboard and versus-teammates minimum, points per game
+# Leaderboard and versus-teammates minimum: his points over his team's games this season, so a
+# player who stops playing falls off (45 points in game 1 drops below 5 after 9 more team games).
+SEASON_MIN_PTS_PER_TEAM_GAME = 5
 NIGHT_MIN_PTS = 10  # last-night minimum, points in the game
 
 
@@ -12,6 +14,15 @@ def game_date(game_id):
 
 def ratio(points, attempts):
     return points / attempts if attempts else None
+
+
+def team_games(games):
+    """How many games each team has played this season."""
+    counts = defaultdict(int)
+    for g in games:
+        counts[g["away"]] += 1
+        counts[g["home"]] += 1
+    return counts
 
 
 def league_average(games):
@@ -24,6 +35,7 @@ def season(games, names=None):
     """One row per player for the season, sorted by PAA per attempt (best first)."""
     names = names or {}
     league = league_average(games)
+    played = team_games(games)
     rows = {}
     for g in sorted(games, key=lambda g: g["id"]):
         for pid, p in g["players"].items():
@@ -42,7 +54,9 @@ def season(games, names=None):
         row["ppa"] = row["pts"] / row["att"]
         row["paa_pa"] = row["ppa"] - league
         row["paa"] = row["pts"] - league * row["att"]
-        row["qualified"] = row["ppg"] >= SEASON_MIN_PPG
+        row["team_gp"] = played[row["team"]]
+        row["pts_per_team_game"] = row["pts"] / row["team_gp"]
+        row["qualified"] = row["pts_per_team_game"] >= SEASON_MIN_PTS_PER_TEAM_GAME
         out.append(row)
     out.sort(key=lambda r: -r["paa_pa"])
     return league, out
@@ -66,6 +80,7 @@ def versus_teammates(games, names=None):
             stint["att"] += p["att"]
             stint["team_pts"] += team_totals[p["team"]][0]
             stint["team_att"] += team_totals[p["team"]][1]
+    played = team_games(games)
     out = []
     for (pid, team), s in stints.items():
         rest_pts, rest_att = s["team_pts"] - s["pts"], s["team_att"] - s["att"]
@@ -74,7 +89,8 @@ def versus_teammates(games, names=None):
         ppa, rest = s["pts"] / s["att"], rest_pts / rest_att
         out.append({"id": pid, "name": s["name"], "team": team, "gp": s["gp"],
                     "ppg": s["pts"] / s["gp"], "att": s["att"], "ppa": ppa, "rest_ppa": rest,
-                    "diff": ppa - rest, "qualified": s["pts"] / s["gp"] >= SEASON_MIN_PPG})
+                    "diff": ppa - rest, "team_gp": played[team],
+                    "qualified": s["pts"] / played[team] >= SEASON_MIN_PTS_PER_TEAM_GAME})
     out.sort(key=lambda r: -r["diff"])
     return out
 
