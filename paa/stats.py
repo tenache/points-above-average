@@ -45,7 +45,7 @@ def league_average(games):
 
 
 def season(games, names=None):
-    """One row per player for the season, sorted by PAA per attempt (best first)."""
+    """One row per player for the season, sorted by PAA per game (best first)."""
     names = names or {}
     league = league_average(games)
     played = stint_team_games(games)
@@ -67,11 +67,12 @@ def season(games, names=None):
         row["ppa"] = row["pts"] / row["att"]
         row["paa_pa"] = row["ppa"] - league
         row["paa"] = row["pts"] - league * row["att"]
+        row["paa_pg"] = row["paa"] / row["gp"]
         row["team_gp"] = sum(n for (p, _), n in played.items() if p == row["id"])
         row["pts_per_team_game"] = row["pts"] / row["team_gp"]
         row["qualified"] = row["pts_per_team_game"] >= SEASON_MIN_PTS_PER_TEAM_GAME
         out.append(row)
-    out.sort(key=lambda r: -r["paa_pa"])
+    out.sort(key=lambda r: -r["paa_pg"])
     return league, out
 
 
@@ -132,7 +133,7 @@ def nights(games, names=None):
                 ppa = p["pts"] / p["att"]
                 rows.append({"id": pid, "name": names.get(pid) or p["name"], "team": p["team"],
                              "opp": opponent, "game": g["id"], "pts": p["pts"], "att": p["att"],
-                             "ppa": ppa, "paa_pa": ppa - league,
+                             "ppa": ppa, "paa_pa": ppa - league, "paa": p["pts"] - league * p["att"],
                              "qualified": p["pts"] >= NIGHT_MIN_PTS})
         rows.sort(key=lambda r: -r["paa_pa"])
         out[date] = {"league_ppa": league, "rows": rows}

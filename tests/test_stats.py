@@ -121,3 +121,23 @@ def test_check_reports_differences_with_official_totals():
 ])
 def test_months_to_check(today, expected):
     assert update.months_to_check(today) == expected
+
+
+def test_paa_per_game_is_the_season_total_over_his_games_and_orders_the_rows():
+    # League: 40 points on 40 attempts = 1.0. Volume shooter: 30 on 20 in each of 2 games, +10 a game.
+    # Efficient bench player: 6 on 2 in 1 game, +4 a game but a far better rate.
+    games = [game("202611010HHH", "AAA", "HHH", {"vol": line("AAA", 30, 20), "bench": line("AAA", 6, 2),
+                                                  "h": line("HHH", 0, 0)}),
+             game("202611020HHH", "AAA", "HHH", {"vol": line("AAA", 30, 20), "miss": line("HHH", 0, 16)})]
+    league, rows = stats.season(games)
+    assert league == 66 / 58
+    by_id = {r["id"]: r for r in rows}
+    assert by_id["vol"]["paa_pg"] == by_id["vol"]["paa"] / 2
+    assert [r["id"] for r in rows] == sorted(by_id, key=lambda k: -by_id[k]["paa_pg"])
+    assert by_id["bench"]["paa_pa"] > by_id["vol"]["paa_pa"] and rows[0]["id"] == "vol"
+
+
+def test_a_night_row_carries_the_game_s_points_above_average():
+    rows = stats.nights([game("202611010HHH", "AAA", "HHH", {"a": line("AAA", 12, 6), "h": line("HHH", 6, 6)})])
+    row = {r["id"]: r for r in rows["2026-11-01"]["rows"]}["a"]
+    assert row["paa"] == 12 - 1.5 * 6
