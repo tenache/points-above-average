@@ -367,12 +367,13 @@ function nightLabel(iso, best) {
 
 function renderHeader(d) {
   const leader = d.players.find((r) => r.qualified);
-  const night = d.last_night && d.nights[d.last_night].rows[0];
+  const top = d.last_night && d.nights[d.last_night].rows[0];
+  const night = top && top.paa > 0 ? top : null;
   $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
   $("tiles").innerHTML = [
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
     ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pg)}">${fmt.signed2(leader.paa_pg)}</span><div class="note">a game (${fmt.signed(leader.paa_pa)} per attempt), ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
-    [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa)}">${fmt.signed1(night.paa)}</span><div class="note">${night.pts} points on ${plural(night.att, "attempt")} (${fmt.signed(night.paa_pa)} per attempt)</div>` : "—"],
+    [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa)}">${fmt.signed1(night.paa)}</span><div class="note">points above average: ${night.pts} points on ${plural(night.att, "attempt")} (${fmt.signed(night.paa_pa)} per attempt)</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
   const latest = new Date(d.last_night + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
   $("through").textContent = `Games through ${latest}.`;
@@ -437,9 +438,20 @@ function renderNights(d) {
     { label: "Pts", cell: (r) => r.pts },
     { label: "Att", cell: (r) => r.att },
   ];
+  // The top 10 by the game's PAA as shown; players tied with the 10th stay in, and ties share a rank.
+  function top(rows) {
+    const shown = (r) => fmt.signed1(r.paa);
+    const out = [];
+    for (const r of rows) {
+      const prev = out[out.length - 1];
+      if (out.length >= 10 && shown(prev) !== shown(r)) break;
+      out.push({ ...r, rank: prev && shown(prev) === shown(r) ? prev.rank : out.length + 1 });
+    }
+    return out;
+  }
   function table(id, rows) {
     $(id).innerHTML = `<thead><tr><th class="l">#</th>${cols.map((c) => `<th class="${c.left ? "l" : ""}"${c.title ? ` title="${esc(c.title)}"` : ""}>${c.label}</th>`).join("")}</tr></thead><tbody>` +
-      (rows.length ? rows.map((r, i) => `<tr><td class="rank l">${i + 1}</td>${cols.map((c) => `<td class="${c.left ? "l" : ""}">${c.cell(r)}</td>`).join("")}</tr>`).join("")
+      (rows.length ? rows.map((r) => `<tr><td class="rank l">${r.rank}</td>${cols.map((c) => `<td class="${c.left ? "l" : ""}">${c.cell(r)}</td>`).join("")}</tr>`).join("")
         : `<tr><td colspan="${cols.length + 1}" class="empty l">Nobody.</td></tr>`) + "</tbody>";
   }
   function show() {
@@ -448,10 +460,10 @@ function renderNights(d) {
     const rows = night ? night.rows : [];
     $("night-title").textContent = date === dates[0] ? nightLabel(date) : label(date);
     $("night-note").textContent = night
-      ? `Players with at least ${d.min_night_pts} points in the game, ranked by their points above average in it, against the league average through that night (${fmt.three(night.league_ppa)} points per attempt).`
+      ? `Players with at least ${d.min_night_pts} points in the game, ranked by points above average in that game, against the league average through that night (${fmt.three(night.league_ppa)} points per attempt).`
       : "";
-    table("night-best", rows.filter((r) => r.paa > 0).slice(0, 10));
-    table("night-worst", rows.filter((r) => r.paa < 0).reverse().slice(0, 10));
+    table("night-best", top(rows.filter((r) => r.paa > 0)));
+    table("night-worst", top(rows.filter((r) => r.paa < 0).sort((a, b) => a.paa - b.paa || a.name.localeCompare(b.name))));
     const i = dates.indexOf(date);
     $("night-prev").disabled = i >= dates.length - 1;
     $("night-next").disabled = i <= 0;
