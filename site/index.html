@@ -393,7 +393,7 @@ function renderLeaders(d) {
     { label: "Total PAA", sort: "paa", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points minus league average × attempts" },
     { label: "Pts / g", sort: "ppg", cell: (r) => fmt.one(r.ppg) },
     { label: "Att / g", sort: "apg", cell: (r) => fmt.one(r.apg) },
-    { label: "Games", sort: "gp", cell: (r) => `${r.gp}<span class="team">of ${r.team_gp}</span>`, title: "Games he played, of his team's games" },
+    { label: "Games", sort: "gp", cell: (r) => `${r.gp} <span class="team">of ${r.team_gp}</span>`, title: "Games he played, of his team's games" },
   ], () => qualified.filter((r) => matches(r, norm(search.value.trim()))),
   { key: "paa_pa", dir: "desc", page: 25, more: "leaders-more", rankLabel: "PAA per attempt",
     onSort: () => sync(document.querySelector("#leaders .seg"), state, "paa_pa") });
@@ -412,7 +412,7 @@ function renderMates(d) {
     { label: "His pts / att", sort: "ppa", cell: (r) => fmt.three(r.ppa) },
     { label: "Teammates'", sort: "rest_ppa", cell: (r) => fmt.three(r.rest_ppa) },
     { label: "Pts / g", sort: "ppg", cell: (r) => fmt.one(r.ppg) },
-    { label: "Games", sort: "gp", cell: (r) => `${r.gp}<span class="team">of ${r.team_gp}</span>`, title: "Games he played, of his team's games" },
+    { label: "Games", sort: "gp", cell: (r) => `${r.gp} <span class="team">of ${r.team_gp}</span>`, title: "Games he played, of his team's games" },
   ], () => qualified.filter((r) => matches(r, norm(search.value.trim()))),
   { key: "diff", dir: "desc", page: 25, more: "mates-more", rankLabel: "the gap to his teammates",
     onSort: () => sync(document.querySelector("#mates .seg"), state, "diff") });
@@ -542,7 +542,9 @@ function drawScatter() {
     const x = Math.max(0, Math.min(width - w, left ? X(r.x) - 8 - w : X(r.x) + 8)), y = Y(r.y) - 8;
     if (boxes.some((b) => x < b.x + b.w && b.x < x + w && y < b.y + 16 && b.y < y + 16)) continue;
     boxes.push({ x, y, w });
-    parts.push(`<text class="label" data-key="${esc(r.key)}" x="${x}" y="${Y(r.y) + 4}">${esc(r.name)}</text>`);
+    // Left labels end 8 px from their dot (text-anchor end), right ones start 8 px from it.
+    const anchorX = left ? Math.max(w, X(r.x) - 8) : x;
+    parts.push(`<text class="label" data-key="${esc(r.key)}" x="${anchorX}" y="${Y(r.y) + 4}" text-anchor="${left ? "end" : "start"}">${esc(r.name)}</text>`);
   }
   parts.push(`<text class="zero-label" x="${m.l + 6}" y="${Y(0) - 6}">${yk === "diff" ? "same as teammates" : "league average"}</text>`);
   svg.innerHTML = parts.join("");
@@ -575,7 +577,10 @@ function drawScatter() {
       const b = t.getBBox();
       return px >= b.x - 2 && px <= b.x + b.width + 2 && py >= b.y - 2 && py <= b.y + b.height + 2;
     });
-    let best = label ? svg.querySelector(`circle[data-key="${CSS.escape(label.dataset.key)}"]`) : null;
+    // A dot right under the finger (within 4 px) beats a label drawn over it.
+    const under = [...svg.querySelectorAll("circle.dot")].find((c) =>
+      Math.hypot(+c.getAttribute("cx") - px, +c.getAttribute("cy") - py) <= 4 / scale);
+    let best = under || (label ? svg.querySelector(`circle[data-key="${CSS.escape(label.dataset.key)}"]`) : null);
     for (const selector of ["circle.dot:not(.dim)", "circle.dot.dim"]) {
       let bestDistance = 22 / scale;
       for (const circle of best ? [] : svg.querySelectorAll(selector)) {
