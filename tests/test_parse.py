@@ -114,6 +114,27 @@ def test_a_foul_drawn_after_a_turnover_is_not_an_and_one():
     assert (p["att"], p["other_ftm"]) == (1, 1)
 
 
+def test_a_teammate_s_turnover_doesnt_cancel_an_and_one_already_drawn():
+    p = counts([
+        (3, "0:21.0", "away", f"{player(A)} makes 2-pt layup at rim"),
+        (3, "0:21.0", "home", f"Shooting foul by {player(H)} (drawn by {player(A)})"),
+        (3, "0:21.0", "away", f"Turnover by {player(B)} (offensive foul)"),
+        (3, "0:21.0", "away", f"{player(A)} makes free throw 1 of 1"),
+    ])[A]
+    assert (p["pts"], p["att"], p["other_ftm"]) == (3, 1, 0)
+
+
+def test_a_fouled_miss_doesnt_leave_an_and_one_behind():
+    p = counts([
+        (1, "5:00.0", "away", f"{player(A)} makes 2-pt layup at rim"),
+        (1, "5:00.0", "home", f"Shooting foul by {player(H)} (drawn by {player(A)})"),
+        (1, "5:00.0", "away", f"{player(A)} makes free throw 1 of 2"),
+        (1, "5:00.0", "away", f"{player(A)} makes free throw 2 of 2"),
+        (1, "4:30.0", "away", f"{player(A)} makes free throw 1 of 1"),
+    ])[A]
+    assert (p["att"], p["other_ftm"]) == (2, 1)
+
+
 def test_lone_free_throw_after_a_loose_ball_foul_is_his_own():
     p = counts([
         (1, "6:00.0", "away", f"{player(B)} makes 2-pt layup at rim"),
