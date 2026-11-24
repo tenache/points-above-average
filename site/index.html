@@ -12,7 +12,7 @@
   --surface: #fcfcfb;
   --ink: #0b0b0b;
   --ink-2: #52514e;
-  --muted: #898781;
+  --muted: #6b6a65;
   --grid: #e1e0d9;
   --axis: #c3c2b7;
   --border: rgba(11, 11, 11, 0.10);
@@ -94,8 +94,8 @@ input[type="search"] { width: 200px; max-width: 100%; }
 table { border-collapse: collapse; width: 100%; font-size: 14px; }
 th, td { padding: 6px 8px; text-align: right; white-space: nowrap; border-bottom: 1px solid var(--grid); }
 th { color: var(--ink-2); font-weight: 500; font-size: 13px; }
-th.sortable { cursor: pointer; user-select: none; }
-th.sortable:hover { color: var(--ink); }
+th button { font: inherit; color: inherit; background: none; border: 0; padding: 0; cursor: pointer; }
+th button:hover { color: var(--ink); }
 th[aria-sort="descending"]::after { content: " ↓"; }
 th[aria-sort="ascending"]::after { content: " ↑"; }
 td.l, th.l { text-align: left; }
@@ -107,6 +107,7 @@ td a:hover { text-decoration: underline; }
 .pos { color: var(--above-text); font-weight: 600; }
 .neg { color: var(--below-text); font-weight: 600; }
 tr.hl td { background: var(--wash); }
+.more:disabled { color: var(--muted); cursor: default; opacity: 0.5; }
 .more { margin-top: 10px; font: inherit; font-size: 14px; background: none; border: 0; color: var(--above-text); cursor: pointer; padding: 4px 0; }
 .two { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1fr); gap: 16px; }
 .two > div, .card, main { min-width: 0; }
@@ -115,7 +116,8 @@ tr.hl td { background: var(--wash); }
 svg { display: block; width: 100%; height: auto; overflow: visible; }
 svg text { fill: var(--muted); font-size: 11px; font-family: inherit; }
 svg .gridline { stroke: var(--grid); stroke-width: 1; }
-svg .zero { stroke: var(--axis); stroke-width: 1.5; }
+svg .zero { stroke: var(--muted); stroke-width: 1.5; }
+svg .zero-label { fill: var(--ink-2); paint-order: stroke; stroke: var(--surface); stroke-width: 3px; }
 svg .dot { stroke: var(--surface); stroke-width: 2; cursor: pointer; }
 svg .dot.dim { opacity: 0.25; }
 svg .dot.picked { stroke: var(--ink); stroke-width: 2; }
@@ -123,7 +125,7 @@ svg .label { fill: var(--ink); font-size: 12px; font-weight: 600; paint-order: s
 .tip {
   position: absolute; pointer-events: none; background: var(--surface); color: var(--ink);
   border: 1px solid var(--border); border-radius: 8px; padding: 8px 10px; font-size: 13px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); display: none; white-space: nowrap; z-index: 3;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.12); display: none; max-width: min(300px, 100%); z-index: 3;
 }
 .tip b { display: block; }
 .tip span { color: var(--ink-2); }
@@ -142,15 +144,15 @@ footer a { color: inherit; }
 
   <div class="tiles" id="tiles"></div>
 
-  <nav role="tablist">
-    <button role="tab" data-tab="leaders" aria-selected="true">Leaderboard</button>
-    <button role="tab" data-tab="night" aria-selected="false">Last night</button>
-    <button role="tab" data-tab="mates" aria-selected="false">Versus teammates</button>
-    <button role="tab" data-tab="scatter" aria-selected="false">Scatter</button>
-    <button role="tab" data-tab="about" aria-selected="false">How it works</button>
+  <nav role="tablist" aria-label="Views">
+    <button role="tab" id="tab-leaders" aria-controls="leaders" data-tab="leaders" aria-selected="true">Leaderboard</button>
+    <button role="tab" id="tab-night" aria-controls="night" data-tab="night" aria-selected="false">Last night</button>
+    <button role="tab" id="tab-mates" aria-controls="mates" data-tab="mates" aria-selected="false">Versus teammates</button>
+    <button role="tab" id="tab-scatter" aria-controls="scatter" data-tab="scatter" aria-selected="false">Scatter</button>
+    <button role="tab" id="tab-about" aria-controls="about" data-tab="about" aria-selected="false">How it works</button>
   </nav>
 
-  <section id="leaders" class="active">
+  <section id="leaders" class="active" role="tabpanel" aria-labelledby="tab-leaders">
     <div class="card">
       <h2>Season leaderboard</h2>
       <p class="note" id="leaders-note"></p>
@@ -166,7 +168,7 @@ footer a { color: inherit; }
     </div>
   </section>
 
-  <section id="night">
+  <section id="night" role="tabpanel" aria-labelledby="tab-night">
     <div class="card">
       <h2 id="night-title">Last night</h2>
       <p class="note" id="night-note"></p>
@@ -182,7 +184,7 @@ footer a { color: inherit; }
     </div>
   </section>
 
-  <section id="mates">
+  <section id="mates" role="tabpanel" aria-labelledby="tab-mates">
     <div class="card">
       <h2>Versus his own teammates</h2>
       <p class="note" id="mates-note"></p>
@@ -198,7 +200,7 @@ footer a { color: inherit; }
     </div>
   </section>
 
-  <section id="scatter">
+  <section id="scatter" role="tabpanel" aria-labelledby="tab-scatter">
     <div class="card">
       <h2 id="scatter-title">Volume against efficiency</h2>
       <p class="note">Each dot is a player. Hover or tap a dot for details; type a name to find someone.</p>
@@ -215,11 +217,11 @@ footer a { color: inherit; }
         <input type="search" id="ssearch" placeholder="Find a player" aria-label="Find a player in the chart">
       </div>
       <div class="chart-wrap" id="chart-wrap"><svg id="chart" role="img" aria-label="Scatter plot of players"></svg><div class="tip" id="tip"></div></div>
-      <div class="legend"><span><i class="key" style="background:var(--above)"></i>Above average</span><span><i class="key" style="background:var(--below)"></i>Below average</span></div>
+      <div class="legend"><span><i class="key" style="background:var(--above)"></i><span id="legend-above">Above average</span></span><span><i class="key" style="background:var(--below)"></i><span id="legend-below">Below average</span></span></div>
     </div>
   </section>
 
-  <section id="about">
+  <section id="about" role="tabpanel" aria-labelledby="tab-about">
     <div class="card">
       <h2>How it works</h2>
       <p><b>PAA per attempt</b> = the player's points per attempt − the league's points per attempt. Positive is better than average. If the league scores 1 point per attempt, a made 2 is +1, and a made 2 followed by a miss is 0.</p>
@@ -232,7 +234,7 @@ footer a { color: inherit; }
   </section>
 
   <footer>
-    Data from <a href="https://www.basketball-reference.com/">Basketball-Reference</a> play-by-play, fetched once a day.
+    Data from <a href="https://www.basketball-reference.com/">Basketball-Reference</a> play-by-play, fetched once a day. <span id="through"></span>
     <span id="updated"></span>
   </footer>
 </main>
@@ -242,20 +244,27 @@ footer a { color: inherit; }
 const $ = (id) => document.getElementById(id);
 const BBREF = "https://www.basketball-reference.com/players/";
 const fmt = {
-  signed: (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(3),
-  signed1: (v) => (v > 0 ? "+" : v < 0 ? "−" : "") + Math.abs(v).toFixed(1),
+  signed: (v) => signedFixed(v, 3),
+  signed1: (v) => signedFixed(v, 1),
   three: (v) => v.toFixed(3),
   one: (v) => v.toFixed(1),
   int: (v) => String(Math.round(v)),
 };
+function signedFixed(v, digits) {
+  const text = Math.abs(v).toFixed(digits);
+  if (Number(text) === 0) return text;
+  return (v > 0 ? "+" : "−") + text;
+}
+const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const cls = (v) => (v > 0 ? "pos" : v < 0 ? "neg" : "");
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 const playerLink = (r) => `<a href="${BBREF}${esc(r.id[0])}/${esc(r.id)}.html" target="_blank" rel="noopener">${esc(r.name)}</a><span class="team">${esc(r.team)}</span>`;
-const norm = (s) => s.normalize("NFD").replace(/[̀-ͯ]/g, "").toLowerCase();
+const norm = (s) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
 const matches = (r, q) => !q || norm(r.name).includes(q) || r.team.toLowerCase() === q;
 
 function sortable(tableId, columns, getRows, opts) {
-  // A table whose headers sort it; opts: {key, dir, page}
+  // A table whose headers sort it; opts: {key, dir, page, more, rankLabel, onSort}.
+  // Rows carry their own .rank (by the table's main measure), so a search keeps real ranks.
   const table = $(tableId);
   const state = { key: opts.key, dir: opts.dir, limit: opts.page };
   const more = opts.more ? $(opts.more) : null;
@@ -266,20 +275,22 @@ function sortable(tableId, columns, getRows, opts) {
       return state.dir === "asc" ? c : -c;
     });
     const shown = rows.slice(0, state.limit);
-    const head = "<tr><th class=\"l\">#</th>" + columns.map((c) =>
-      `<th class="${c.left ? "l" : ""} ${c.sort ? "sortable" : ""}" data-key="${c.sort || ""}" ` +
+    const head = `<tr><th class="l" title="Rank by ${esc(opts.rankLabel)}">#</th>` + columns.map((c) =>
+      `<th class="${c.left ? "l" : ""}" ` +
       `${c.sort === state.key ? `aria-sort="${state.dir === "asc" ? "ascending" : "descending"}"` : ""} ` +
-      `${c.title ? `title="${esc(c.title)}"` : ""}>${c.label}</th>`).join("") + "</tr>";
-    const body = shown.length ? shown.map((r, i) => `<tr${opts.highlight && opts.highlight(r) ? ' class="hl"' : ""}>` +
-      `<td class="rank l">${i + 1}</td>` + columns.map((c) => `<td class="${c.left ? "l" : ""}">${c.cell(r)}</td>`).join("") + "</tr>").join("")
+      `${c.title ? `title="${esc(c.title)}"` : ""}>${c.sort ? `<button type="button" data-key="${c.sort}">${c.label}</button>` : c.label}</th>`).join("") + "</tr>";
+    const body = shown.length ? shown.map((r) => "<tr>" +
+      `<td class="rank l">${r.rank}</td>` + columns.map((c) => `<td class="${c.left ? "l" : ""}">${c.cell(r)}</td>`).join("") + "</tr>").join("")
       : `<tr><td colspan="${columns.length + 1}" class="empty l">Nobody here yet.</td></tr>`;
     table.innerHTML = `<thead>${head}</thead><tbody>${body}</tbody>`;
-    table.querySelectorAll("th.sortable").forEach((th) => th.addEventListener("click", () => {
-      const key = th.dataset.key;
+    table.querySelectorAll("th button").forEach((button) => button.addEventListener("click", () => {
+      const key = button.dataset.key;
       if (state.key === key) state.dir = state.dir === "asc" ? "desc" : "asc";
-      else { state.key = key; state.dir = "desc"; }
+      else { state.key = key; state.dir = typeof (getRows()[0] || {})[key] === "string" ? "asc" : "desc"; }
       if (opts.onSort) opts.onSort(state);
       render();
+      const again = table.querySelector(`th button[data-key="${key}"]`);
+      if (again) again.focus();
     }));
     if (more) {
       more.hidden = rows.length <= opts.page;
@@ -294,15 +305,21 @@ function sortable(tableId, columns, getRows, opts) {
   return state;
 }
 
-function segmented(container, state) {
+function segmented(container, state, key) {
   container.querySelectorAll("button").forEach((b) => b.addEventListener("click", () => {
+    state.key = key;
     state.dir = b.dataset.order;
-    sync(container, state);
+    sync(container, state, key);
     state.render();
   }));
 }
-function sync(container, state) {
-  container.querySelectorAll("button").forEach((x) => x.setAttribute("aria-pressed", String(x.dataset.order === state.dir)));
+function sync(container, state, key) {
+  container.querySelectorAll("button").forEach((x) =>
+    x.setAttribute("aria-pressed", String(state.key === key && x.dataset.order === state.dir)));
+}
+function ranked(rows, key) {
+  rows.slice().sort((a, b) => b[key] - a[key]).forEach((r, i) => { r.rank = i + 1; });
+  return rows;
 }
 
 function setupTabs() {
@@ -310,15 +327,35 @@ function setupTabs() {
   function show(name) {
     tabs.forEach((t) => t.setAttribute("aria-selected", String(t.dataset.tab === name)));
     document.querySelectorAll("section").forEach((s) => s.classList.toggle("active", s.id === name));
+    tabs.forEach((t) => { t.tabIndex = t.dataset.tab === name ? 0 : -1; });
+    closeTip();
     if (name === "scatter") drawScatter();
     try { history.replaceState(null, "", "#" + name); } catch (e) { /* file:// or sandbox */ }
   }
-  tabs.forEach((t) => t.addEventListener("click", () => show(t.dataset.tab)));
+  tabs.forEach((t, i) => {
+    t.addEventListener("click", () => show(t.dataset.tab));
+    t.addEventListener("keydown", (e) => {
+      const step = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+      if (!step) return;
+      const next = tabs[(i + step + tabs.length) % tabs.length];
+      show(next.dataset.tab);
+      next.focus();
+    });
+  });
   const start = location.hash.slice(1);
-  if ([...tabs].some((t) => t.dataset.tab === start)) show(start);
+  show([...tabs].some((t) => t.dataset.tab === start) ? start : "leaders");
 }
 
 let DATA;
+
+// "Last night" only when the latest night really was last night (US time, so today or yesterday here).
+function nightLabel(iso, best) {
+  const day = new Date(iso + "T12:00:00");
+  const ago = (Date.now() - day.getTime()) / 86400000;
+  const date = day.toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+  if (ago < 1.6) return best ? "Best last night" : "Last night";
+  return best ? `Best on ${date}` : date;
+}
 
 function renderHeader(d) {
   const leader = d.players.find((r) => r.qualified);
@@ -326,14 +363,15 @@ function renderHeader(d) {
   $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
   $("tiles").innerHTML = [
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
-    ["Top of the league", leader ? `${esc(leader.name)} <span class="pos">${fmt.signed(leader.paa_pa)}</span>` : "—"],
-    ["Best last night", night ? `${esc(night.name)} <span class="pos">${fmt.signed(night.paa_pa)}</span>` : "—"],
+    ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pa)}">${fmt.signed(leader.paa_pa)}</span><div class="note">${plural(leader.gp, "game")}, ${fmt.one(leader.ppg)} points a game</div>` : "—"],
+    [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa_pa)}">${fmt.signed(night.paa_pa)}</span><div class="note">${night.pts} points on ${plural(night.att, "attempt")}</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
+  $("through").textContent = `Games through ${nightLabel(d.last_night)}.`;
   $("updated").textContent = `Updated ${new Date(d.updated).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}.`;
   const c = d.check;
   $("check-line").textContent = c.players_checked
     ? (c.mismatches.length
-      ? `Check: ${c.mismatches.length} of ${c.players_checked} players' shot counts differ from Basketball-Reference's season totals (usually a game that's in one and not yet in the other).`
+      ? `Check: ${c.mismatches.length} of ${c.players_checked} players differ slightly from Basketball-Reference's own season totals (its play-by-play and box scores don't always agree, and a game can reach one before the other).`
       : `Check: shot, free-throw and point totals match Basketball-Reference's season totals for all ${c.players_checked} players.`)
     : "";
 }
@@ -341,6 +379,7 @@ function renderHeader(d) {
 function renderLeaders(d) {
   $("leaders-note").textContent = `Players with at least ${d.min_ppg} points per game. Click a column to sort.`;
   const search = $("leaders-search");
+  const qualified = ranked(d.players.filter((r) => r.qualified), "paa_pa");
   const state = sortable("leaders-table", [
     { label: "Player", left: true, cell: playerLink, sort: "name" },
     { label: "PAA / att", sort: "paa_pa", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>`, title: "Points per attempt minus the league's" },
@@ -349,16 +388,18 @@ function renderLeaders(d) {
     { label: "Pts / g", sort: "ppg", cell: (r) => fmt.one(r.ppg) },
     { label: "Att / g", sort: "apg", cell: (r) => fmt.one(r.apg) },
     { label: "Games", sort: "gp", cell: (r) => r.gp },
-  ], () => d.players.filter((r) => r.qualified && matches(r, norm(search.value.trim()))),
-  { key: "paa_pa", dir: "desc", page: 25, more: "leaders-more", onSort: () => sync(document.querySelector("#leaders .seg"), state) });
+  ], () => qualified.filter((r) => matches(r, norm(search.value.trim()))),
+  { key: "paa_pa", dir: "desc", page: 25, more: "leaders-more", rankLabel: "PAA per attempt",
+    onSort: () => sync(document.querySelector("#leaders .seg"), state, "paa_pa") });
   search.addEventListener("input", state.render);
-  segmented(document.querySelector("#leaders .seg"), state);
+  segmented(document.querySelector("#leaders .seg"), state, "paa_pa");
   state.render();
 }
 
 function renderMates(d) {
   $("mates-note").textContent = `His points per attempt minus the rest of his team's, in the games he played. At least ${d.min_ppg} points per game.`;
   const search = $("mates-search");
+  const qualified = ranked(d.teammates.filter((r) => r.qualified), "diff");
   const state = sortable("mates-table", [
     { label: "Player", left: true, cell: playerLink, sort: "name" },
     { label: "Gap", sort: "diff", cell: (r) => `<span class="${cls(r.diff)}">${fmt.signed(r.diff)}</span>`, title: "His points per attempt minus his teammates'" },
@@ -366,10 +407,11 @@ function renderMates(d) {
     { label: "Teammates'", sort: "rest_ppa", cell: (r) => fmt.three(r.rest_ppa) },
     { label: "Pts / g", sort: "ppg", cell: (r) => fmt.one(r.ppg) },
     { label: "Games", sort: "gp", cell: (r) => r.gp },
-  ], () => d.teammates.filter((r) => r.qualified && matches(r, norm(search.value.trim()))),
-  { key: "diff", dir: "desc", page: 25, more: "mates-more", onSort: () => sync(document.querySelector("#mates .seg"), state) });
+  ], () => qualified.filter((r) => matches(r, norm(search.value.trim()))),
+  { key: "diff", dir: "desc", page: 25, more: "mates-more", rankLabel: "the gap to his teammates",
+    onSort: () => sync(document.querySelector("#mates .seg"), state, "diff") });
   search.addEventListener("input", state.render);
-  segmented(document.querySelector("#mates .seg"), state);
+  segmented(document.querySelector("#mates .seg"), state, "diff");
   state.render();
 }
 
@@ -393,7 +435,7 @@ function renderNights(d) {
     const date = select.value;
     const night = d.nights[date];
     const rows = night ? night.rows : [];
-    $("night-title").textContent = date === dates[0] ? "Last night" : label(date);
+    $("night-title").textContent = date === dates[0] ? nightLabel(date) : label(date);
     $("night-note").textContent = night
       ? `Players with at least ${d.min_night_pts} points in the game, against the league average through that night (${fmt.three(night.league_ppa)} points per attempt).`
       : "";
@@ -428,6 +470,13 @@ function niceTicks(min, max, count) {
 }
 
 let picked = null;
+function closeTip() {
+  picked = null;
+  const tip = $("tip");
+  if (tip) tip.style.display = "none";
+  const ring = document.querySelector("svg .dot.picked");
+  if (ring) ring.classList.remove("picked");
+}
 function scatterRows() {
   const xk = $("sx").value, yk = $("sy").value, all = $("sall").checked;
   if (yk === "diff") {
@@ -449,6 +498,8 @@ function drawScatter() {
   const m = { l: 66, r: 12, t: 16, b: 40 };
   svg.setAttribute("viewBox", `0 0 ${width} ${height}`);
   $("scatter-title").textContent = `${AXES[xk].label} against ${AXES[yk].label}`;
+  $("legend-above").textContent = yk === "diff" ? "Better than his teammates" : "Above the league average";
+  $("legend-below").textContent = yk === "diff" ? "Worse than his teammates" : "Below the league average";
   if (!rows.length) { svg.innerHTML = ""; return; }
   const xs = rows.map((r) => r.x), ys = rows.map((r) => r.y);
   const x0 = 0, x1 = Math.max(...xs) * 1.04;
@@ -465,7 +516,6 @@ function drawScatter() {
     parts.push(`<text x="${X(t)}" y="${height - m.b + 16}" text-anchor="middle">${fmt.int(t)}</text>`);
   }
   parts.push(`<line class="zero" x1="${m.l}" x2="${width - m.r}" y1="${Y(0)}" y2="${Y(0)}"/>`);
-  parts.push(`<text x="${m.l + 6}" y="${Y(0) - 6}">${yk === "diff" ? "same as teammates" : "league average"}</text>`);
   parts.push(`<text x="${(m.l + width - m.r) / 2}" y="${height - 4}" text-anchor="middle">${AXES[xk].label}</text>`);
   parts.push(`<text transform="translate(12 ${(m.t + height - m.b) / 2}) rotate(-90)" text-anchor="middle">${AXES[yk].label}</text>`);
   const q = norm($("ssearch").value.trim());
@@ -473,7 +523,7 @@ function drawScatter() {
   const order = rows.slice().sort((a, b) => Math.abs(a.y) - Math.abs(b.y));
   for (const r of order) {
     const dim = q && !found.includes(r);
-    parts.push(`<circle class="dot${dim ? " dim" : ""}${picked === r.key ? " picked" : ""}" data-key="${esc(r.key)}" cx="${X(r.x).toFixed(1)}" cy="${Y(r.y).toFixed(1)}" r="${narrow ? 4 : 5}" fill="var(${r.y >= 0 ? "--above" : "--below"})"/>`);
+    parts.push(`<circle class="dot${dim ? " dim" : ""}${picked === r.key ? " picked" : ""}" data-key="${esc(r.key)}" cx="${X(r.x).toFixed(1)}" cy="${Y(r.y).toFixed(1)}" r="${narrow ? 4 : 5}" fill="var(${r.y > 0 ? "--above" : r.y < 0 ? "--below" : "--muted"})"/>`);
   }
   // Label the extremes (top 3 and bottom 2) and anyone searched for, never every dot.
   const byY = rows.slice().sort((a, b) => b.y - a.y);
@@ -487,6 +537,7 @@ function drawScatter() {
     boxes.push({ x, y, w });
     parts.push(`<text class="label" x="${X(r.x) + (left ? -8 : 8)}" y="${Y(r.y) + 4}" text-anchor="${left ? "end" : "start"}">${esc(r.name)}</text>`);
   }
+  parts.push(`<text class="zero-label" x="${m.l + 6}" y="${Y(0) - 6}">${yk === "diff" ? "same as teammates" : "league average"}</text>`);
   svg.innerHTML = parts.join("");
   const byKey = new Map(rows.map((r) => [r.key, r]));
   function showTip(circle) {
@@ -494,20 +545,37 @@ function drawScatter() {
     if (!r) return;
     tip.innerHTML = `<b>${esc(r.name)} <span>${esc(r.team)}</span></b>` +
       `${AXES[yk].label}: <b style="display:inline" class="${cls(r.y)}">${AXES[yk].fmt(r.y)}</b><br>` +
-      `<span>${AXES[xk].label}: ${AXES[xk].fmt(r.x)} · ${fmt.three(r.ppa)} pts/att · ${r.gp} games</span>`;
+      `<span>${AXES[xk].label}: ${AXES[xk].fmt(r.x)} · ${fmt.three(r.ppa)} pts/att · ${plural(r.gp, "game")}</span>`;
     tip.style.display = "block";
     const scale = svg.getBoundingClientRect().width / width;
     const cx = +circle.getAttribute("cx") * scale, cy = +circle.getAttribute("cy") * scale;
     const w = tip.offsetWidth, ww = wrap.clientWidth;
     tip.style.left = Math.max(0, Math.min(ww - w, cx + 12 > ww - w ? cx - w - 12 : cx + 12)) + "px";
-    tip.style.top = Math.max(0, cy - tip.offsetHeight - 10) + "px";
+    const above = cy - tip.offsetHeight - 12;
+    tip.style.top = (above >= 0 ? above : cy + 12) + "px";
   }
-  svg.onpointerover = (e) => { if (e.target.classList.contains("dot")) showTip(e.target); };
-  svg.onpointerout = (e) => { if (e.target.classList.contains("dot") && !picked) tip.style.display = "none"; };
-  svg.onclick = (e) => {
-    if (e.target.classList.contains("dot")) { picked = e.target.dataset.key; drawScatter(); showTip(svg.querySelector(`circle[data-key="${CSS.escape(picked)}"]`)); }
-    else { picked = null; tip.style.display = "none"; drawScatter(); }
+  const pickedDot = () => picked && svg.querySelector(`circle[data-key="${CSS.escape(picked)}"]`);
+  svg.onpointerover = (e) => { if (e.pointerType === "mouse" && e.target.classList.contains("dot")) showTip(e.target); };
+  svg.onpointerout = (e) => {
+    if (e.pointerType !== "mouse" || !e.target.classList.contains("dot")) return;
+    if (pickedDot()) showTip(pickedDot()); else tip.style.display = "none";
   };
+  svg.onclick = (e) => {
+    // Fingers are bigger than dots: pick the nearest dot within 22 px of the tap.
+    const box = svg.getBoundingClientRect(), scale = box.width / width;
+    const px = (e.clientX - box.left) / scale, py = (e.clientY - box.top) / scale;
+    let best = null, bestDistance = 22 / scale;
+    for (const circle of svg.querySelectorAll("circle.dot:not(.dim)")) {
+      const d = Math.hypot(+circle.getAttribute("cx") - px, +circle.getAttribute("cy") - py);
+      if (d < bestDistance) { best = circle; bestDistance = d; }
+    }
+    if (!best) { closeTip(); return; }
+    svg.querySelectorAll(".dot.picked").forEach((c) => c.classList.remove("picked"));
+    best.classList.add("picked");
+    picked = best.dataset.key;
+    showTip(best);
+  };
+  if (pickedDot()) showTip(pickedDot());
 }
 
 async function start() {
@@ -520,12 +588,17 @@ async function start() {
     $("tiles").innerHTML = `<p class="error">Couldn't load the numbers (${esc(e.message)}). Try again in a minute.</p>`;
     return;
   }
+  if (!DATA.games || DATA.league_ppa == null) {
+    $("tiles").innerHTML = `<p class="note">No games yet this season. Come back after the first night.</p>`;
+    return;
+  }
   renderHeader(DATA);
   renderLeaders(DATA);
   renderMates(DATA);
   renderNights(DATA);
-  ["sx", "sy", "sall"].forEach((id) => $(id).addEventListener("change", () => { picked = null; $("tip").style.display = "none"; drawScatter(); }));
+  ["sx", "sy", "sall"].forEach((id) => $(id).addEventListener("change", () => { closeTip(); drawScatter(); }));
   $("ssearch").addEventListener("input", drawScatter);
+  document.addEventListener("click", (e) => { if (!$("chart-wrap").contains(e.target)) closeTip(); });
   let resize;
   window.addEventListener("resize", () => { clearTimeout(resize); resize = setTimeout(drawScatter, 150); });
   if (document.querySelector("#scatter.active")) drawScatter();

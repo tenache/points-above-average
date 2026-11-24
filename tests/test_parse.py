@@ -40,12 +40,56 @@ def test_and_one_adds_a_point_not_an_attempt():
     assert (p["pts"], p["att"], p["trips"]) == (3, 1, 0)
 
 
+def test_and_one_logged_a_second_later_is_still_an_and_one():
+    p = counts([
+        (1, "4:13.0", "away", f"{player(A)} makes 2-pt layup at rim"),
+        (1, "4:12.0", "home", f"Shooting foul by {player(H)} (drawn by {player(A)})"),
+        (1, "4:12.0", "away", f"{player(A)} makes free throw 1 of 1"),
+    ])[A]
+    assert (p["pts"], p["att"], p["trips"]) == (3, 1, 0)
+
+
 def test_lone_free_throw_without_a_make_is_an_attempt():
     p = counts([
         (2, "3:10.0", "away", f"{player(A)} makes 2-pt layup at rim"),
+        (2, "2:40.0", "home", f"{player(H)} misses 2-pt layup at rim"),
         (2, "1:05.0", "away", f"{player(A)} makes free throw 1 of 1"),
     ])[A]
     assert (p["pts"], p["att"], p["trips"]) == (3, 2, 1)
+
+
+@pytest.mark.parametrize("foul", [
+    "Def 3 sec tech foul by Team",
+    f"Technical foul by {player(H)}",
+    f"Personal take foul by {player(H)} (drawn by {player(A)})",
+    f"Away from play foul by {player(H)} (drawn by {player(B)})",
+])
+def test_lone_free_throw_after_a_technical_or_take_foul_is_left_out(foul):
+    p = counts([
+        (3, "6:00.0", "home", f"{player(H)} misses 2-pt layup at rim"),
+        (3, "0:11.0", "away", foul),
+        (3, "0:11.0", "away", f"{player(A)} makes free throw 1 of 1"),
+    ])[A]
+    assert (p["pts"], p["att"], p["fta"], p["other_fta"], p["other_ftm"]) == (0, 0, 0, 1, 1)
+
+
+def test_rescinded_technical_doesnt_make_the_next_free_throw_a_technical():
+    p = counts([
+        (3, "6:00.0", "home", f"{player(H)} misses 2-pt layup at rim"),
+        (3, "0:11.0", "away", f"Rescinded technical foul by {player(H)}"),
+        (3, "0:11.0", "away", f"{player(A)} makes free throw 1 of 1"),
+    ])[A]
+    assert (p["pts"], p["att"]) == (1, 1)
+
+
+def test_two_shot_trip_after_a_technical_still_counts():
+    p = counts([
+        (3, "0:11.0", "away", f"Technical foul by {player(H)}"),
+        (3, "0:11.0", "away", f"{player(A)} makes technical free throw"),
+        (3, "0:11.0", "away", f"{player(A)} makes free throw 1 of 2"),
+        (3, "0:11.0", "away", f"{player(A)} makes free throw 2 of 2"),
+    ])[A]
+    assert (p["pts"], p["att"], p["other_ftm"]) == (2, 1, 1)
 
 
 def test_and_one_check_looks_at_the_period_too():
@@ -84,12 +128,19 @@ def test_players_who_never_shoot_still_played():
     assert p[A]["team"] == p[B]["team"] == "AAA" and p[A]["att"] == 0
 
 
-def test_opponents_named_in_a_play_are_not_counted_for_that_team():
+def test_fouls_sit_in_the_column_of_the_team_that_drew_them():
+    # On Basketball-Reference the foul is logged on the fouled team's side.
     p = counts([
-        (1, "4:00.0", "away", f"Shooting foul by {player(A)} (drawn by {player(H)})"),
+        (1, "4:00.0", "home", f"Shooting foul by {player(A)} (drawn by {player(H)})"),
         (1, "4:00.0", "home", f"{player(H)} makes free throw 1 of 2"),
+        (1, "3:30.0", "away", f"{player(A)} misses 2-pt layup at rim"),
     ])
-    assert p[H]["team"] == "HHH"
+    assert p[H]["team"] == "HHH" and p[A]["team"] == "AAA"
+
+
+def test_a_player_who_only_fouls_gets_the_other_column_s_team():
+    p = counts([(1, "4:00.0", "home", f"Personal foul by {player(A)} (drawn by {player(H)})")])
+    assert p[A]["team"] == "AAA"
 
 
 def test_home_team_must_match_the_game_id():

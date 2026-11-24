@@ -12,7 +12,7 @@ An **attempt** is a field-goal attempt or a trip to the free-throw line:
 
 - Two or three free throws in one trip count as one attempt, so 2/2 from the line equals a made 2.
 - An and-one is one attempt: the extra free throw adds a point to the shot.
-- Technical and flagrant free throws are left out, points included: they aren't the player's own shot.
+- Technical and flagrant free throws are left out, points included: they aren't the player's own shot. So are the lone free throws after a take foul or an away-from-play foul, where the team picks the shooter.
 - Turnovers don't count.
 
 The league average is total points over total attempts, across every player this season, counted the same way.
