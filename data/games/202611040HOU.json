@@ -4,18 +4,18 @@
  "id": "202611040HOU",
  "players": {
   "ballla01": {
-   "att": 14,
+   "att": 13,
    "fga": 11,
    "fgm2": 2,
    "fgm3": 4,
-   "fta": 5,
+   "fta": 4,
    "ftm": 4,
    "name": "L. Ball",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 20,
    "team": "MIN",
-   "trips": 3
+   "trips": 2
   },
   "berinjo01": {
    "att": 3,

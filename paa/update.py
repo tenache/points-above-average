@@ -23,17 +23,13 @@ DATA = ROOT / "data"
 SITE = ROOT / "site"
 
 
-def months_to_check(saved_ids, today):
-    """Schedule pages worth fetching: from the month of the latest saved game
-    (or the season's start) through the current month."""
+def months_to_check(today):
+    """Every schedule page of the season so far (October through this month, at most nine),
+    so a game that failed in an earlier month is still tried again."""
     first, last = (SEASON_END_YEAR - 1, 10), (SEASON_END_YEAR, 6)
     end = min((today.year, today.month), last)
-    start = first
-    if saved_ids:
-        latest = max(saved_ids)  # ids start with the date, so the largest is the latest
-        start = max(first, (int(latest[:4]), int(latest[4:6])))
     months = []
-    year, month = start
+    year, month = first
     while (year, month) <= end:
         months.append(MONTHS[MONTH_NUMBERS.index(month)])
         year, month = (year + 1, 1) if month == 12 else (year, month + 1)
@@ -58,28 +54,43 @@ def save_game(fetcher, gid):
     write_json(DATA / "games" / f"{gid}.json", game, indent=1, sort_keys=True, ensure_ascii=False)
 
 
+def this_season(game_id):
+    return game_id[:8] >= f"{SEASON_END_YEAR - 1}1001"
+
+
+def skippable(error):
+    """A page that can't be parsed, or is missing (404), is one bad game: skip it and go on.
+    Anything else (refused, rate limited, timing out, a server error) stops the run."""
+    if isinstance(error, ValueError):
+        return True
+    response = getattr(error, "response", None)
+    return response is not None and response.status_code == 404
+
+
 def fetch_new(fetcher, max_games, log=print):
     """Fetch the games played since the last run. A game that fails is skipped and
     tried again next run; the others are still saved, and the run fails at the end."""
     games_dir = DATA / "games"
     games_dir.mkdir(parents=True, exist_ok=True)
-    saved = {p.stem for p in games_dir.glob("*.json")}
+    saved = {p.stem for p in games_dir.glob("*.json") if this_season(p.stem)}
     today = datetime.now(timezone.utc).date()
     played = []
-    for month in months_to_check(saved, today):
+    for month in months_to_check(today):
         played += parse.game_ids(fetcher.get(fetch.schedule_path(SEASON_END_YEAR, month), use_cache=False))
-    if saved and max(saved) not in played:
-        # The latest saved game's month is always checked, so a working parser must see it.
-        raise RuntimeError(f"the schedule pages don't list {max(saved)}: has Basketball-Reference's layout changed?")
+    missing = saved - set(played)
+    if missing:
+        # Every month is checked, so a working parser must list every saved game.
+        raise RuntimeError(f"the schedule pages don't list {len(missing)} saved games, e.g. {min(missing)}: "
+                           "has Basketball-Reference's layout changed?")
     new = [gid for gid in played if gid not in saved]
-    log(f"{len(played)} games played in the months checked, {len(new)} new")
+    log(f"{len(played)} games played so far, {len(new)} new")
     failed = []
     for gid in new[:max_games]:
         try:
             save_game(fetcher, gid)
-        except RuntimeError:
-            raise  # rate limited: stop asking
         except Exception as error:  # noqa: BLE001 - one bad page mustn't block the rest
+            if not skippable(error):
+                raise
             failed.append(f"{gid}: {error}")
     if len(new) > max_games:
         log(f"stopped after {max_games} games; run again for the remaining {len(new) - max_games}")
@@ -90,13 +101,14 @@ def fetch_new(fetcher, max_games, log=print):
     return failed
 
 
-def reparse(fetcher, log=print):
-    """Parse every saved game again (after a parser fix), from cached pages when there are any."""
+def reparse(cache_dir, log=print):
+    """Parse every saved game again (after a parser fix), from cached pages only: never online."""
+    fetcher = fetch.Fetcher(cache_dir=cache_dir, offline=True)
     failed = []
     for path in sorted((DATA / "games").glob("*.json")):
         try:
             save_game(fetcher, path.stem)
-        except Exception as error:  # noqa: BLE001
+        except (ValueError, FileNotFoundError) as error:
             failed.append(f"{path.stem}: {error}")
     log(f"parsed {len(list((DATA / 'games').glob('*.json')))} saved games again")
     return failed
@@ -152,10 +164,12 @@ def main():
     parser.add_argument("--reparse", action="store_true", help="parse every saved game again")
     parser.add_argument("--cache", help="folder that keeps fetched pages between runs")
     args = parser.parse_args()
+    if args.reparse and not args.cache:
+        parser.error("--reparse needs --cache: it only reads pages already fetched")
     fetcher = fetch.Fetcher(cache_dir=args.cache)
     failed = []
     if args.reparse:
-        failed += reparse(fetcher)
+        failed += reparse(args.cache)
     if not args.no_fetch:
         failed += fetch_new(fetcher, args.max_games)
     if fetcher.requests_made:

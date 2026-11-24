@@ -94,13 +94,12 @@ def test_check_reports_differences_with_official_totals():
     assert stats.check(games, off) == [{"id": "a", "name": "A", "diff": {"fga": -1}}]
 
 
-@pytest.mark.parametrize("today, saved, expected", [
-    (date(2026, 9, 30), [], []),
-    (date(2026, 10, 25), [], ["october"]),
-    (date(2026, 11, 24), [], ["october", "november"]),
-    (date(2026, 11, 24), ["202611230ATL", "202610200DET"], ["november"]),
-    (date(2027, 1, 3), ["202612300ATL"], ["december", "january"]),
-    (date(2027, 8, 1), ["202706150BOS"], ["june"]),
+@pytest.mark.parametrize("today, expected", [
+    (date(2026, 9, 30), []),
+    (date(2026, 10, 25), ["october"]),
+    (date(2026, 11, 24), ["october", "november"]),
+    (date(2027, 1, 3), ["october", "november", "december", "january"]),
+    (date(2027, 8, 1), ["october", "november", "december", "january", "february", "march", "april", "may", "june"]),
 ])
-def test_months_to_check(today, saved, expected):
-    assert update.months_to_check(saved, today) == expected
+def test_months_to_check(today, expected):
+    assert update.months_to_check(today) == expected

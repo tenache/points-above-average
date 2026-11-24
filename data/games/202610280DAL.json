@@ -284,18 +284,18 @@
    "trips": 0
   },
   "stirtbe01": {
-   "att": 6,
+   "att": 5,
    "fga": 5,
    "fgm2": 2,
    "fgm3": 1,
-   "fta": 2,
+   "fta": 1,
    "ftm": 1,
    "name": "B. Stirtz",
-   "other_fta": 0,
+   "other_fta": 1,
    "other_ftm": 0,
    "pts": 8,
    "team": "OKC",
-   "trips": 1
+   "trips": 0
   },
   "washipj01": {
    "att": 17,

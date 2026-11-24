@@ -46,18 +46,18 @@
    "trips": 0
   },
   "curryst01": {
-   "att": 13,
+   "att": 12,
    "fga": 10,
    "fgm2": 2,
    "fgm3": 4,
-   "fta": 6,
-   "ftm": 6,
+   "fta": 5,
+   "ftm": 5,
    "name": "S. Curry",
-   "other_fta": 3,
-   "other_ftm": 3,
-   "pts": 22,
+   "other_fta": 4,
+   "other_ftm": 4,
+   "pts": 21,
    "team": "GSW",
-   "trips": 3
+   "trips": 2
   },
   "fearsje01": {
    "att": 13,
