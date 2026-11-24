@@ -74,6 +74,13 @@ jobs:
     timeout-minutes: 15
     permissions:
       contents: read
+    # Overlapping runs build one at a time, so an older page is never published last.
+    concurrency:
+      group: pages-build
+      cancel-in-progress: false
+    # One artifact name per attempt: a re-run that rebuilds never meets the earlier attempt's upload.
+    outputs:
+      artifact: github-pages-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v7
         with:
@@ -90,10 +97,14 @@ jobs:
       - uses: actions/upload-pages-artifact@v5
         with:
           path: site
+          name: github-pages-${{ github.run_attempt }}
 
   deploy:
     # "Re-run failed jobs" re-runs only this job, which then publishes the build above.
     needs: build
+    # Without this, the implicit success() also needs update, which is skipped on a push and
+    # fails on a night with a bad game: the page would never be published then.
+    if: ${{ !cancelled() && needs.build.result == 'success' }}
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -108,3 +119,5 @@ jobs:
     steps:
       - id: deploy
         uses: actions/deploy-pages@v5
+        with:
+          artifact_name: ${{ needs.build.outputs.artifact }}
