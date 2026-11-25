@@ -187,7 +187,7 @@ footer a { color: inherit; }
 
   <section id="games" role="tabpanel" aria-labelledby="tab-games">
     <div class="card">
-      <h2>Best games this season</h2>
+      <h2 id="games-title">Best games this season</h2>
       <p class="note" id="games-note"></p>
       <div class="controls">
         <input type="search" id="games-search" placeholder="Find a player or team" aria-label="Find a player or team">
@@ -280,12 +280,14 @@ function signedFixed(v, digits) {
 const plural = (n, word) => `${n} ${word}${n === 1 ? "" : "s"}`;
 const cls = (v) => (v > 0 ? "pos" : v < 0 ? "neg" : "");
 const esc = (s) => String(s).replace(/[&<>"']/g, (c) => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
-const playerLink = (r) => `<a href="${BBREF}${esc(r.id[0])}/${esc(r.id)}.html" target="_blank" rel="noopener">${esc(r.name)}</a><span class="team">${esc(r.team)}</span>`;
+const playerLink = (r) => `<a href="${BBREF}${esc(r.id[0])}/${esc(r.id)}.html" target="_blank" rel="noopener">${esc(r.name || r.id)}</a><span class="team">${esc(r.team)}</span>`;
 const norm = (s) => s.normalize("NFD").replace(/\p{M}/gu, "").toLowerCase();
-const matches = (r, q) => !q || norm(r.name).includes(q) || r.team.toLowerCase() === q;
+const matches = (r, q) => !q || norm(r.name || r.id).includes(q) || r.team.toLowerCase() === q;
 
 function sortable(tableId, columns, getRows, opts) {
-  // A table whose headers sort it; opts: {key, dir, page, more, rankLabel, onSort}.
+  // A table whose headers sort it; opts: {key, dir, page, step, more, rankLabel, onSort, onRender}.
+  // With a step, the button shows that many more rows at a time instead of all of them.
+  // A column's dir is its first direction when clicked (default: strings ascending, numbers descending).
   // Rows carry their own .rank (by the table's main measure), so a search keeps real ranks.
   const table = $(tableId);
   const state = { key: opts.key, dir: opts.dir, limit: opts.page };
@@ -308,7 +310,11 @@ function sortable(tableId, columns, getRows, opts) {
     table.querySelectorAll("th button").forEach((button) => button.addEventListener("click", () => {
       const key = button.dataset.key;
       if (state.key === key) state.dir = state.dir === "asc" ? "desc" : "asc";
-      else { state.key = key; state.dir = typeof (getRows()[0] || {})[key] === "string" ? "asc" : "desc"; }
+      else {
+        const column = columns.find((c) => c.sort === key);
+        state.key = key;
+        state.dir = column.dir || (typeof (getRows()[0] || {})[key] === "string" ? "asc" : "desc");
+      }
       if (opts.onSort) opts.onSort(state);
       render();
       const again = table.querySelector(`th button[data-key="${key}"]`);
@@ -316,11 +322,14 @@ function sortable(tableId, columns, getRows, opts) {
     }));
     if (more) {
       more.hidden = rows.length <= opts.page;
-      more.textContent = state.limit < rows.length ? `Show all ${rows.length}` : "Show fewer";
+      more.textContent = state.limit >= rows.length ? "Show fewer"
+        : opts.step && rows.length - state.limit > opts.step ? `Show ${opts.step} more of ${rows.length}` : `Show all ${rows.length}`;
     }
+    if (opts.onRender) opts.onRender(state);
   }
   if (more) more.addEventListener("click", () => {
-    state.limit = state.limit < Infinity ? Infinity : opts.page;
+    const total = getRows().length;
+    state.limit = state.limit >= total ? opts.page : opts.step ? state.limit + opts.step : Infinity;
     render();
   });
   state.render = render;
@@ -387,13 +396,13 @@ function renderHeader(d) {
   const leader = d.players.find((r) => r.qualified);
   const top = d.last_night && d.nights[d.last_night].rows[0];
   const night = top && top.paa > 0 ? top : null;
-  const best = seasonGames(d).reduce((a, r) => (!a || r.paa > a.paa ? r : a), null);
+  const best = seasonGames(d)[0];
   $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
   $("tiles").innerHTML = [
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
     ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pg)}">${fmt.signed2(leader.paa_pg)}</span><div class="note">a game (${fmt.signed(leader.paa_pa)} per attempt), ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
     [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa)}">${fmt.signed1(night.paa)}</span><div class="note">points above average: ${night.pts} points on ${plural(night.att, "attempt")} (${fmt.signed(night.paa_pa)} per attempt)</div>` : "—"],
-    ["Best game this season", best && best.paa > 0 ? `${esc(best.name)} <span class="${cls(best.paa)}">${fmt.signed1(best.paa)}</span><div class="note">${best.pts} points on ${plural(best.att, "attempt")}, vs ${esc(best.opp)} on ${shortDate(best.date)}</div>` : "—"],
+    ["Best game this season", best && best.paa > 0 ? `${esc(best.name)} <span class="${cls(best.paa)}">${fmt.signed1(best.paa)}</span><div class="note">points above average: ${best.pts} points on ${plural(best.att, "attempt")}, vs ${esc(best.opp)} on ${shortDate(best.date)}</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
   $("through").textContent = `Games through ${shortDate(d.last_night)}.`;
   $("updated").textContent = `Updated ${new Date(d.updated).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}.`;
@@ -429,13 +438,14 @@ function renderLeaders(d) {
 const shortDate = (iso) => new Date(iso + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
 
 // Every game line of the season (the nights only keep lines with the night minimum), with its date.
-// Within a PAA as shown, the earlier game comes first, then the name.
+// paa1 is the game's PAA as shown (one decimal): within it the earlier game comes first, then the
+// name, and the table sorts by paa1 so that order holds (sorting is stable).
 let GAMES;
 function seasonGames(d) {
   if (!GAMES) {
     GAMES = Object.entries(d.nights).flatMap(([date, night]) =>
-      night.rows.map((r) => ({ ...r, date, key: r.game + r.id })));
-    GAMES.sort((a, b) => b.paa - a.paa || a.date.localeCompare(b.date) || a.name.localeCompare(b.name));
+      night.rows.map((r) => ({ ...r, date, paa1: Number(r.paa.toFixed(1)) })));
+    GAMES.sort((a, b) => b.paa1 - a.paa1 || a.date.localeCompare(b.date) || (a.name || a.id).localeCompare(b.name || b.id));
   }
   return GAMES;
 }
@@ -443,19 +453,22 @@ function seasonGames(d) {
 function renderGames(d) {
   $("games-note").textContent = `Every game with at least ${d.min_night_pts} points this season, ranked by points above average in that game, each against the league average through that night. Click a column to sort.`;
   const search = $("games-search");
-  const rows = ranked(seasonGames(d), "paa", fmt.signed1);
+  const rows = ranked(seasonGames(d), "paa1", fmt.signed1);
+  // A team code finds that team's games on both sides: its players' lines and its opponents'.
+  const found = (r, q) => matches(r, q) || r.opp.toLowerCase() === q;
   const state = sortable("games-table", [
     { label: "Player", left: true, cell: (r) => `${playerLink(r)}<span class="team">vs ${esc(r.opp)}</span>`, sort: "name" },
-    { label: "Date", left: true, sort: "date", cell: (r) => esc(shortDate(r.date)) },
-    { label: "PAA", sort: "paa", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points above average in the game" },
+    { label: "PAA", sort: "paa1", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points above average in the game" },
     { label: "PAA / att", sort: "paa_pa", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>`, title: "Points per attempt minus the league's through that night" },
     { label: "Pts", sort: "pts", cell: (r) => r.pts },
     { label: "Att", sort: "att", cell: (r) => r.att },
-  ], () => rows.filter((r) => matches(r, norm(search.value.trim()))),
-  { key: "paa", dir: "desc", page: 25, more: "games-more", rankLabel: "points above average in the game",
-    onSort: () => sync(document.querySelector("#games .seg"), state, "paa") });
+    { label: "Date", left: true, sort: "date", dir: "desc", cell: (r) => esc(shortDate(r.date)) },
+  ], () => rows.filter((r) => found(r, norm(search.value.trim()))),
+  { key: "paa1", dir: "desc", page: 25, step: 100, more: "games-more", rankLabel: "points above average in the game",
+    onSort: () => sync(document.querySelector("#games .seg"), state, "paa1"),
+    onRender: () => { $("games-title").textContent = state.key === "paa1" && state.dir === "asc" ? "Worst games this season" : "Best games this season"; } });
   search.addEventListener("input", state.render);
-  segmented(document.querySelector("#games .seg"), state, "paa");
+  segmented(document.querySelector("#games .seg"), state, "paa1");
   state.render();
 }
 
