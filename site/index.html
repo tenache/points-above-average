@@ -104,6 +104,9 @@ td { font-variant-numeric: tabular-nums; }
 td a { color: inherit; text-decoration: none; }
 td a:hover { text-decoration: underline; }
 .team { color: var(--muted); font-size: 12px; margin-left: 4px; }
+/* Best games: the opponent on a second line, and on narrow phones the name wraps too, so PAA stays in view. */
+.team.opp { display: block; margin-left: 0; }
+@media (max-width: 400px) { #games-table td:nth-child(2) { white-space: normal; min-width: 110px; } }
 .pos { color: var(--above-text); font-weight: 600; }
 .neg { color: var(--below-text); font-weight: 600; }
 tr.hl td { background: var(--wash); }
@@ -457,7 +460,7 @@ function renderGames(d) {
   // A team code finds that team's games on both sides: its players' lines and its opponents'.
   const found = (r, q) => matches(r, q) || r.opp.toLowerCase() === q;
   const state = sortable("games-table", [
-    { label: "Player", left: true, cell: (r) => `${playerLink(r)}<span class="team">vs ${esc(r.opp)}</span>`, sort: "name" },
+    { label: "Player", left: true, cell: (r) => `${playerLink(r)}<span class="team opp">vs ${esc(r.opp)}</span>`, sort: "name" },
     { label: "PAA", sort: "paa1", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points above average in the game" },
     { label: "PAA / att", sort: "paa_pa", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>`, title: "Points per attempt minus the league's through that night" },
     { label: "Pts", sort: "pts", cell: (r) => r.pts },
