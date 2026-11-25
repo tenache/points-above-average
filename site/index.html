@@ -147,6 +147,7 @@ footer a { color: inherit; }
   <nav role="tablist" aria-label="Views">
     <button role="tab" id="tab-leaders" aria-controls="leaders" data-tab="leaders" aria-selected="true">Leaderboard</button>
     <button role="tab" id="tab-night" aria-controls="night" data-tab="night" aria-selected="false">Last night</button>
+    <button role="tab" id="tab-games" aria-controls="games" data-tab="games" aria-selected="false">Best games</button>
     <button role="tab" id="tab-mates" aria-controls="mates" data-tab="mates" aria-selected="false">Versus teammates</button>
     <button role="tab" id="tab-scatter" aria-controls="scatter" data-tab="scatter" aria-selected="false">Scatter</button>
     <button role="tab" id="tab-about" aria-controls="about" data-tab="about" aria-selected="false">How it works</button>
@@ -181,6 +182,22 @@ footer a { color: inherit; }
         <div><h2>Did especially well</h2><div class="scroll"><table id="night-best"></table></div></div>
         <div><h2>Did badly</h2><div class="scroll"><table id="night-worst"></table></div></div>
       </div>
+    </div>
+  </section>
+
+  <section id="games" role="tabpanel" aria-labelledby="tab-games">
+    <div class="card">
+      <h2>Best games this season</h2>
+      <p class="note" id="games-note"></p>
+      <div class="controls">
+        <input type="search" id="games-search" placeholder="Find a player or team" aria-label="Find a player or team">
+        <div class="seg" role="group" aria-label="Order">
+          <button type="button" data-order="desc" aria-pressed="true">Best first</button>
+          <button type="button" data-order="asc" aria-pressed="false">Worst first</button>
+        </div>
+      </div>
+      <div class="scroll"><table id="games-table"></table></div>
+      <button class="more" id="games-more" type="button"></button>
     </div>
   </section>
 
@@ -229,6 +246,7 @@ footer a { color: inherit; }
       <p><b>PAA per attempt</b> = the player's points per attempt − the league's points per attempt. Positive is better than average. If the league scores 1 point per attempt, a made 2 is +1, and a made 2 followed by a miss is 0.</p>
       <p><b>An attempt</b> is a field-goal attempt or one trip to the free-throw line: two or three free throws in a trip count as one attempt, so 2 of 2 from the line is worth the same as a made 2. An and-one is one attempt (the free throw adds a point to the shot). Technical and flagrant free throws are left out, points included. Turnovers don't count.</p>
       <p><b>The league average</b> is every player's points over every player's attempts this season, counted the same way. Last night's numbers use the average through that night, so they don't change later.</p>
+      <p><b>Best games</b> ranks every game this season with at least 10 points by its PAA, each against the league average through that night, like last night's.</p>
       <p><b>Total PAA</b> is that running total for the whole season.</p>
       <p><b>Who's on the boards</b>: players with at least 5 points per team game, his season points over the games his team has played. A good bench player qualifies, and a player who stops playing drops off: 45 points in game 1 stays on for 9 team games.</p>
       <p><b>Versus teammates</b> compares a player with the rest of his team in the games he played, so a player on a bad shooting team doesn't get punished for his teammates, and vice versa. Traded players get one row per team.</p>
@@ -369,14 +387,15 @@ function renderHeader(d) {
   const leader = d.players.find((r) => r.qualified);
   const top = d.last_night && d.nights[d.last_night].rows[0];
   const night = top && top.paa > 0 ? top : null;
+  const best = seasonGames(d).reduce((a, r) => (!a || r.paa > a.paa ? r : a), null);
   $("season-line").textContent = `${d.season} season, ${d.games} games so far.`;
   $("tiles").innerHTML = [
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
     ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pg)}">${fmt.signed2(leader.paa_pg)}</span><div class="note">a game (${fmt.signed(leader.paa_pa)} per attempt), ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
     [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa)}">${fmt.signed1(night.paa)}</span><div class="note">points above average: ${night.pts} points on ${plural(night.att, "attempt")} (${fmt.signed(night.paa_pa)} per attempt)</div>` : "—"],
+    ["Best game this season", best && best.paa > 0 ? `${esc(best.name)} <span class="${cls(best.paa)}">${fmt.signed1(best.paa)}</span><div class="note">${best.pts} points on ${plural(best.att, "attempt")}, vs ${esc(best.opp)} on ${shortDate(best.date)}</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
-  const latest = new Date(d.last_night + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
-  $("through").textContent = `Games through ${latest}.`;
+  $("through").textContent = `Games through ${shortDate(d.last_night)}.`;
   $("updated").textContent = `Updated ${new Date(d.updated).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}.`;
   const c = d.check;
   $("check-line").textContent = c.players_checked
@@ -404,6 +423,39 @@ function renderLeaders(d) {
     onSort: () => sync(document.querySelector("#leaders .seg"), state, "paa_pg") });
   search.addEventListener("input", state.render);
   segmented(document.querySelector("#leaders .seg"), state, "paa_pg");
+  state.render();
+}
+
+const shortDate = (iso) => new Date(iso + "T12:00:00").toLocaleDateString(undefined, { weekday: "short", day: "numeric", month: "short" });
+
+// Every game line of the season (the nights only keep lines with the night minimum), with its date.
+// Within a PAA as shown, the earlier game comes first, then the name.
+let GAMES;
+function seasonGames(d) {
+  if (!GAMES) {
+    GAMES = Object.entries(d.nights).flatMap(([date, night]) =>
+      night.rows.map((r) => ({ ...r, date, key: r.game + r.id })));
+    GAMES.sort((a, b) => b.paa - a.paa || a.date.localeCompare(b.date) || a.name.localeCompare(b.name));
+  }
+  return GAMES;
+}
+
+function renderGames(d) {
+  $("games-note").textContent = `Every game with at least ${d.min_night_pts} points this season, ranked by points above average in that game, each against the league average through that night. Click a column to sort.`;
+  const search = $("games-search");
+  const rows = ranked(seasonGames(d), "paa", fmt.signed1);
+  const state = sortable("games-table", [
+    { label: "Player", left: true, cell: (r) => `${playerLink(r)}<span class="team">vs ${esc(r.opp)}</span>`, sort: "name" },
+    { label: "Date", left: true, sort: "date", cell: (r) => esc(shortDate(r.date)) },
+    { label: "PAA", sort: "paa", cell: (r) => `<span class="${cls(r.paa)}">${fmt.signed1(r.paa)}</span>`, title: "Points above average in the game" },
+    { label: "PAA / att", sort: "paa_pa", cell: (r) => `<span class="${cls(r.paa_pa)}">${fmt.signed(r.paa_pa)}</span>`, title: "Points per attempt minus the league's through that night" },
+    { label: "Pts", sort: "pts", cell: (r) => r.pts },
+    { label: "Att", sort: "att", cell: (r) => r.att },
+  ], () => rows.filter((r) => matches(r, norm(search.value.trim()))),
+  { key: "paa", dir: "desc", page: 25, more: "games-more", rankLabel: "points above average in the game",
+    onSort: () => sync(document.querySelector("#games .seg"), state, "paa") });
+  search.addEventListener("input", state.render);
+  segmented(document.querySelector("#games .seg"), state, "paa");
   state.render();
 }
 
@@ -631,6 +683,7 @@ async function start() {
   }
   renderHeader(DATA);
   renderLeaders(DATA);
+  renderGames(DATA);
   renderMates(DATA);
   renderNights(DATA);
   ["sx", "sy", "sall"].forEach((id) => $(id).addEventListener("change", () => { closeTip(); drawScatter(); }));
