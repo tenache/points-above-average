@@ -33,5 +33,5 @@ Play-by-play from [Basketball-Reference](https://www.basketball-reference.com/),
 ## Running it
 
 - `python -m paa.update` fetches the games played since the last run and builds `site/data.json`; `--no-fetch` only builds; `--reparse --cache cache` parses every saved game again after a parser fix.
-- The GitHub Action (`.github/workflows/update.yml`) runs every morning at 09:30 UTC, commits new games in `data/`, and publishes `site/` on GitHub Pages once the repository variable `PAGES_ENABLED` is `true` (Pages needs a public repository on a free plan).
+- The GitHub Action (`.github/workflows/update.yml`) runs every morning at 09:47 UTC (a quiet minute: GitHub often delays or drops timed runs at :00 and :30), commits new games in `data/`, and publishes `site/` on GitHub Pages once the repository variable `PAGES_ENABLED` is `true` (Pages needs a public repository on a free plan).
 - Each season: set `SEASON_END_YEAR` and `SEASON_LABEL` in `paa/update.py`. GitHub turns off scheduled workflows after 60 days without commits, so after the summer the schedule has to be turned on again in the Actions tab.

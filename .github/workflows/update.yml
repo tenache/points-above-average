@@ -2,7 +2,7 @@ name: Update and publish
 
 on:
   schedule:
-    - cron: "30 9 * * *"  # every morning, 3+ hours after the last West Coast game ends
+    - cron: "47 9 * * *"  # every morning, 3+ hours after the last West Coast game ends; off the busy :00 and :30 slots, where GitHub delays or drops runs
   workflow_dispatch:
   push:
     branches: [main]
