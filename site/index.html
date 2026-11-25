@@ -405,7 +405,7 @@ function renderHeader(d) {
     ["League average", `${fmt.three(d.league_ppa)}<div class="note">points per attempt</div>`],
     ["Top of the league", leader ? `${esc(leader.name)} <span class="${cls(leader.paa_pg)}">${fmt.signed2(leader.paa_pg)}</span><div class="note">a game (${fmt.signed(leader.paa_pa)} per attempt), ${plural(leader.gp, "game")} of his team's ${leader.team_gp}</div>` : "—"],
     [nightLabel(d.last_night, true), night ? `${esc(night.name)} <span class="${cls(night.paa)}">${fmt.signed1(night.paa)}</span><div class="note">points above average: ${night.pts} points on ${plural(night.att, "attempt")} (${fmt.signed(night.paa_pa)} per attempt)</div>` : "—"],
-    ["Best game this season", best && best.paa > 0 ? `${esc(best.name)} <span class="${cls(best.paa)}">${fmt.signed1(best.paa)}</span><div class="note">points above average: ${best.pts} points on ${plural(best.att, "attempt")}, vs ${esc(best.opp)} on ${shortDate(best.date)}</div>` : "—"],
+    ["Best game this season", best && best.paa > 0 ? `${esc(best.name || best.id)} <span class="${cls(best.paa)}">${fmt.signed1(best.paa)}</span><div class="note">points above average: ${best.pts} points on ${plural(best.att, "attempt")}, vs ${esc(best.opp)} on ${shortDate(best.date)}</div>` : "—"],
   ].map(([label, value]) => `<div class="tile"><div class="label">${label}</div><div class="value" style="font-size:${label === "League average" ? 24 : 18}px">${value}</div></div>`).join("");
   $("through").textContent = `Games through ${shortDate(d.last_night)}.`;
   $("updated").textContent = `Updated ${new Date(d.updated).toLocaleString(undefined, { dateStyle: "medium", timeStyle: "short" })}.`;
