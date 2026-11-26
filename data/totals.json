@@ -1,34 +1,34 @@
 {
  "achiupr01": {
-  "fga": 102,
+  "fga": 109,
   "fta": 28,
-  "g": 14,
+  "g": 15,
   "name": "Precious Achiuwa",
-  "pts": 128,
+  "pts": 139,
   "team": "SAC"
  },
  "acuffda01": {
-  "fga": 377,
-  "fta": 77,
-  "g": 17,
+  "fga": 401,
+  "fta": 79,
+  "g": 18,
   "name": "Darius Acuff Jr.",
-  "pts": 418,
+  "pts": 440,
   "team": "SAC"
  },
  "adamsst01": {
-  "fga": 17,
-  "fta": 2,
-  "g": 5,
+  "fga": 21,
+  "fta": 6,
+  "g": 6,
   "name": "Steven Adams",
-  "pts": 20,
+  "pts": 26,
   "team": "HOU"
  },
  "adebaba01": {
-  "fga": 196,
-  "fta": 113,
-  "g": 16,
+  "fga": 212,
+  "fta": 118,
+  "g": 17,
   "name": "Bam Adebayo",
-  "pts": 307,
+  "pts": 324,
   "team": "MIA"
  },
  "aidoojo01": {
@@ -72,35 +72,35 @@
   "team": "CHO"
  },
  "allenja01": {
-  "fga": 120,
+  "fga": 127,
   "fta": 53,
-  "g": 15,
+  "g": 16,
   "name": "Jarrett Allen",
-  "pts": 192,
+  "pts": 202,
   "team": "CLE"
  },
  "alvarjo01": {
-  "fga": 36,
+  "fga": 46,
   "fta": 0,
-  "g": 10,
+  "g": 11,
   "name": "Jose Alvarado",
-  "pts": 33,
+  "pts": 54,
   "team": "NYK"
  },
  "amentna01": {
-  "fga": 95,
+  "fga": 101,
   "fta": 28,
-  "g": 16,
+  "g": 17,
   "name": "Nate Ament",
-  "pts": 122,
+  "pts": 130,
   "team": "MIL"
  },
  "anderch02": {
-  "fga": 85,
-  "fta": 8,
-  "g": 15,
+  "fga": 94,
+  "fta": 10,
+  "g": 16,
   "name": "Christian Anderson Jr.",
-  "pts": 97,
+  "pts": 112,
   "team": "CHO"
  },
  "anderky01": {
@@ -112,11 +112,11 @@
   "team": "TOR"
  },
  "antetgi01": {
-  "fga": 269,
-  "fta": 141,
-  "g": 15,
+  "fga": 287,
+  "fta": 154,
+  "g": 16,
   "name": "Giannis Antetokounmpo",
-  "pts": 423,
+  "pts": 455,
   "team": "MIA"
  },
  "anunoog01": {
@@ -128,11 +128,11 @@
   "team": "NYK"
  },
  "avdijde01": {
-  "fga": 237,
-  "fta": 123,
-  "g": 15,
+  "fga": 258,
+  "fta": 131,
+  "g": 16,
   "name": "Deni Avdija",
-  "pts": 365,
+  "pts": 398,
   "team": "POR"
  },
  "awakato01": {
@@ -168,11 +168,11 @@
   "team": "UTA"
  },
  "ballla01": {
-  "fga": 272,
+  "fga": 290,
   "fta": 39,
-  "g": 18,
+  "g": 19,
   "name": "LaMelo Ball",
-  "pts": 310,
+  "pts": 329,
   "team": "MIN"
  },
  "bambamo01": {
@@ -200,19 +200,19 @@
   "team": "ORL"
  },
  "barlodo01": {
-  "fga": 12,
-  "fta": 1,
-  "g": 2,
+  "fga": 20,
+  "fta": 3,
+  "g": 3,
   "name": "Dominick Barlow",
-  "pts": 18,
+  "pts": 27,
   "team": "PHI"
  },
  "barneha02": {
-  "fga": 74,
+  "fga": 76,
   "fta": 19,
-  "g": 16,
+  "g": 17,
   "name": "Harrison Barnes",
-  "pts": 87,
+  "pts": 92,
   "team": "SAS"
  },
  "barnesc01": {
@@ -240,11 +240,11 @@
   "team": "TOR"
  },
  "bassech01": {
-  "fga": 76,
-  "fta": 32,
-  "g": 15,
+  "fga": 85,
+  "fta": 34,
+  "g": 16,
   "name": "Charles Bassey",
-  "pts": 130,
+  "pts": 140,
   "team": "GSW"
  },
  "battlja01": {
@@ -264,11 +264,11 @@
   "team": "WAS"
  },
  "berinjo01": {
-  "fga": 54,
-  "fta": 36,
-  "g": 18,
+  "fga": 55,
+  "fta": 42,
+  "g": 19,
   "name": "Joan Beringer",
-  "pts": 85,
+  "pts": 89,
   "team": "MIN"
  },
  "beysa01": {
@@ -296,35 +296,35 @@
   "team": "ORL"
  },
  "blackle01": {
-  "fga": 47,
+  "fga": 53,
   "fta": 2,
-  "g": 13,
+  "g": 14,
   "name": "Leaky Black",
-  "pts": 55,
+  "pts": 58,
   "team": "SAC"
  },
  "bogdabo01": {
-  "fga": 66,
+  "fga": 70,
   "fta": 14,
-  "g": 18,
+  "g": 19,
   "name": "Bogdan Bogdanović",
-  "pts": 90,
+  "pts": 95,
   "team": "HOU"
  },
  "bonaad01": {
-  "fga": 24,
+  "fga": 27,
   "fta": 7,
-  "g": 10,
+  "g": 11,
   "name": "Adem Bona",
   "pts": 23,
   "team": "PHI"
  },
  "bookede01": {
-  "fga": 285,
-  "fta": 102,
-  "g": 16,
+  "fga": 303,
+  "fta": 114,
+  "g": 17,
   "name": "Devin Booker",
-  "pts": 392,
+  "pts": 417,
   "team": "PHO"
  },
  "boozeca02": {
@@ -376,27 +376,27 @@
   "team": "DEN"
  },
  "bridgmi01": {
-  "fga": 134,
+  "fga": 149,
   "fta": 8,
-  "g": 17,
+  "g": 18,
   "name": "Mikal Bridges",
-  "pts": 133,
+  "pts": 152,
   "team": "NYK"
  },
  "bridgmi02": {
-  "fga": 186,
+  "fga": 194,
   "fta": 38,
-  "g": 16,
+  "g": 17,
   "name": "Miles Bridges",
-  "pts": 236,
+  "pts": 238,
   "team": "PHO"
  },
  "brookdi01": {
-  "fga": 201,
-  "fta": 40,
-  "g": 16,
+  "fga": 214,
+  "fta": 42,
+  "g": 17,
   "name": "Dillon Brooks",
-  "pts": 243,
+  "pts": 255,
   "team": "PHO"
  },
  "broomjo01": {
@@ -408,11 +408,11 @@
   "team": "MIN"
  },
  "brownja02": {
-  "fga": 251,
-  "fta": 82,
-  "g": 15,
+  "fga": 259,
+  "fta": 84,
+  "g": 16,
   "name": "Jaylen Brown",
-  "pts": 336,
+  "pts": 342,
   "team": "PHI"
  },
  "brownko01": {
@@ -432,35 +432,35 @@
   "team": "SAS"
  },
  "brownmi02": {
-  "fga": 129,
-  "fta": 35,
-  "g": 12,
+  "fga": 138,
+  "fta": 37,
+  "g": 13,
   "name": "Mikel Brown Jr.",
-  "pts": 149,
+  "pts": 155,
   "team": "BRK"
  },
  "brunsja01": {
-  "fga": 355,
-  "fta": 112,
-  "g": 17,
+  "fga": 377,
+  "fta": 118,
+  "g": 18,
   "name": "Jalen Brunson",
-  "pts": 451,
+  "pts": 470,
   "team": "NYK"
  },
  "bryanca01": {
-  "fga": 62,
+  "fga": 65,
   "fta": 4,
-  "g": 17,
+  "g": 18,
   "name": "Carter Bryant",
-  "pts": 60,
+  "pts": 62,
   "team": "SAS"
  },
  "bryanth01": {
-  "fga": 63,
-  "fta": 31,
-  "g": 12,
+  "fga": 65,
+  "fta": 33,
+  "g": 13,
   "name": "Thomas Bryant",
-  "pts": 103,
+  "pts": 108,
   "team": "CLE"
  },
  "bufkiko01": {
@@ -472,19 +472,19 @@
   "team": "UTA"
  },
  "burribr01": {
-  "fga": 156,
-  "fta": 58,
-  "g": 18,
+  "fga": 162,
+  "fta": 60,
+  "g": 19,
   "name": "Brayden Burries",
-  "pts": 206,
+  "pts": 209,
   "team": "MIL"
  },
  "buzelma01": {
-  "fga": 182,
-  "fta": 62,
-  "g": 17,
+  "fga": 197,
+  "fta": 71,
+  "g": 18,
   "name": "Matas Buzelis",
-  "pts": 257,
+  "pts": 281,
   "team": "CHI"
  },
  "cainja01": {
@@ -496,19 +496,19 @@
   "team": "ORL"
  },
  "caldwke01": {
-  "fga": 78,
+  "fga": 84,
   "fta": 10,
-  "g": 18,
+  "g": 19,
   "name": "Kentavious Caldwell-Pope",
-  "pts": 104,
+  "pts": 109,
   "team": "PHI"
  },
  "camarto01": {
-  "fga": 162,
-  "fta": 22,
-  "g": 17,
+  "fga": 168,
+  "fta": 26,
+  "g": 18,
   "name": "Toumani Camara",
-  "pts": 200,
+  "pts": 208,
   "team": "POR"
  },
  "capelca01": {
@@ -520,9 +520,9 @@
   "team": "HOU"
  },
  "cardwdy01": {
-  "fga": 29,
+  "fga": 30,
   "fta": 17,
-  "g": 10,
+  "g": 11,
   "name": "Dylan Cardwell",
   "pts": 40,
   "team": "SAC"
@@ -576,11 +576,11 @@
   "team": "ORL"
  },
  "carusal01": {
-  "fga": 62,
+  "fga": 71,
   "fta": 20,
-  "g": 12,
+  "g": 13,
   "name": "Alex Caruso",
-  "pts": 89,
+  "pts": 100,
   "team": "OKC"
  },
  "castlco01": {
@@ -592,11 +592,11 @@
   "team": "ORL"
  },
  "castlst01": {
-  "fga": 252,
-  "fta": 48,
-  "g": 18,
+  "fga": 270,
+  "fta": 54,
+  "g": 19,
   "name": "Stephon Castle",
-  "pts": 298,
+  "pts": 318,
   "team": "SAS"
  },
  "cenacch01": {
@@ -616,17 +616,17 @@
   "team": "WAS"
  },
  "champju02": {
-  "fga": 150,
-  "fta": 16,
-  "g": 18,
+  "fga": 162,
+  "fta": 19,
+  "g": 19,
   "name": "Julian Champagnie",
-  "pts": 199,
+  "pts": 210,
   "team": "SAS"
  },
  "chrisca02": {
-  "fga": 15,
+  "fga": 17,
   "fta": 2,
-  "g": 8,
+  "g": 9,
   "name": "Cam Christie",
   "pts": 13,
   "team": "LAC"
@@ -648,11 +648,11 @@
   "team": "DAL"
  },
  "cissosi01": {
-  "fga": 92,
+  "fga": 106,
   "fta": 37,
-  "g": 17,
+  "g": 18,
   "name": "Sidy Cissoko",
-  "pts": 134,
+  "pts": 150,
   "team": "POR"
  },
  "clarkja02": {
@@ -672,11 +672,11 @@
   "team": "NYK"
  },
  "claxtni01": {
-  "fga": 40,
+  "fga": 47,
   "fta": 17,
-  "g": 7,
+  "g": 8,
   "name": "Nic Claxton",
-  "pts": 62,
+  "pts": 72,
   "team": "CHI"
  },
  "claytwa01": {
@@ -688,27 +688,27 @@
   "team": "DAL"
  },
  "cliffni01": {
-  "fga": 52,
+  "fga": 57,
   "fta": 8,
-  "g": 16,
+  "g": 17,
   "name": "Nique Clifford",
   "pts": 53,
   "team": "OKC"
  },
  "clingdo01": {
-  "fga": 138,
-  "fta": 30,
-  "g": 17,
+  "fga": 143,
+  "fta": 32,
+  "g": 18,
   "name": "Donovan Clingan",
-  "pts": 198,
+  "pts": 203,
   "team": "POR"
  },
  "clownno01": {
-  "fga": 88,
+  "fga": 101,
   "fta": 27,
-  "g": 16,
+  "g": 17,
   "name": "Noah Clowney",
-  "pts": 110,
+  "pts": 127,
   "team": "BRK"
  },
  "colliis01": {
@@ -728,11 +728,11 @@
   "team": "DET"
  },
  "colliza01": {
-  "fga": 42,
+  "fga": 47,
   "fta": 1,
-  "g": 11,
+  "g": 12,
   "name": "Zach Collins",
-  "pts": 33,
+  "pts": 39,
   "team": "CHI"
  },
  "conlemi01": {
@@ -744,11 +744,11 @@
   "team": "BOS"
  },
  "conwery01": {
-  "fga": 82,
+  "fga": 89,
   "fta": 22,
-  "g": 14,
+  "g": 15,
   "name": "Ryan Conwell",
-  "pts": 104,
+  "pts": 111,
   "team": "MIA"
  },
  "coopeca02": {
@@ -768,17 +768,17 @@
   "team": "WAS"
  },
  "cowarce01": {
-  "fga": 196,
-  "fta": 41,
-  "g": 17,
+  "fga": 210,
+  "fta": 44,
+  "g": 18,
   "name": "Cedric Coward",
-  "pts": 261,
+  "pts": 275,
   "team": "MEM"
  },
  "crawfis01": {
   "fga": 18,
   "fta": 4,
-  "g": 11,
+  "g": 12,
   "name": "Isaiah Crawford",
   "pts": 29,
   "team": "HOU"
@@ -808,11 +808,11 @@
   "team": "GSW"
  },
  "dadiepa01": {
-  "fga": 17,
+  "fga": 24,
   "fta": 1,
-  "g": 6,
+  "g": 7,
   "name": "Pacôme Dadiet",
-  "pts": 22,
+  "pts": 29,
   "team": "NYK"
  },
  "daniedy01": {
@@ -848,11 +848,11 @@
   "team": "DAL"
  },
  "demineg01": {
-  "fga": 96,
-  "fta": 30,
-  "g": 10,
+  "fga": 107,
+  "fta": 37,
+  "g": 11,
   "name": "Egor Dëmin",
-  "pts": 111,
+  "pts": 126,
   "team": "BRK"
  },
  "dennira01": {
@@ -872,11 +872,11 @@
   "team": "DEN"
  },
  "diabamo01": {
-  "fga": 86,
-  "fta": 34,
-  "g": 14,
+  "fga": 95,
+  "fta": 38,
+  "g": 15,
   "name": "Moussa Diabaté",
-  "pts": 135,
+  "pts": 149,
   "team": "CHO"
  },
  "diallal01": {
@@ -896,19 +896,19 @@
   "team": "NOP"
  },
  "diawamo01": {
-  "fga": 21,
+  "fga": 22,
   "fta": 4,
-  "g": 7,
+  "g": 8,
   "name": "Mohamed Diawara",
-  "pts": 17,
+  "pts": 20,
   "team": "NYK"
  },
  "dickgr01": {
-  "fga": 80,
+  "fga": 82,
   "fta": 16,
-  "g": 15,
+  "g": 16,
   "name": "Gradey Dick",
-  "pts": 106,
+  "pts": 108,
   "team": "LAC"
  },
  "diengou01": {
@@ -952,43 +952,43 @@
   "team": "ATL"
  },
  "dosunay01": {
-  "fga": 243,
+  "fga": 257,
   "fta": 38,
-  "g": 18,
+  "g": 19,
   "name": "Ayo Dosunmu",
-  "pts": 327,
+  "pts": 343,
   "team": "MIN"
  },
  "drumman01": {
-  "fga": 68,
+  "fga": 69,
   "fta": 12,
-  "g": 17,
+  "g": 18,
   "name": "Andre Drummond",
-  "pts": 64,
+  "pts": 67,
   "team": "NYK"
  },
  "dunnkr01": {
-  "fga": 90,
-  "fta": 21,
-  "g": 16,
+  "fga": 98,
+  "fta": 23,
+  "g": 17,
   "name": "Kris Dunn",
-  "pts": 114,
+  "pts": 126,
   "team": "LAC"
  },
  "dunnry01": {
   "fga": 60,
   "fta": 14,
-  "g": 16,
+  "g": 17,
   "name": "Ryan Dunn",
   "pts": 75,
   "team": "PHO"
  },
  "duranke01": {
-  "fga": 241,
-  "fta": 128,
-  "g": 18,
+  "fga": 256,
+  "fta": 134,
+  "g": 19,
   "name": "Kevin Durant",
-  "pts": 389,
+  "pts": 409,
   "team": "HOU"
  },
  "durenja01": {
@@ -1008,27 +1008,27 @@
   "team": "WAS"
  },
  "easonta01": {
-  "fga": 165,
+  "fga": 168,
   "fta": 26,
-  "g": 18,
+  "g": 19,
   "name": "Tari Eason",
-  "pts": 186,
+  "pts": 193,
   "team": "HOU"
  },
  "edeyza01": {
-  "fga": 81,
-  "fta": 30,
-  "g": 14,
+  "fga": 85,
+  "fta": 31,
+  "g": 15,
   "name": "Zach Edey",
-  "pts": 126,
+  "pts": 133,
   "team": "MEM"
  },
  "edgecvj01": {
-  "fga": 195,
-  "fta": 31,
-  "g": 17,
+  "fga": 208,
+  "fta": 35,
+  "g": 18,
   "name": "VJ Edgecombe",
-  "pts": 232,
+  "pts": 250,
   "team": "PHI"
  },
  "edwaran01": {
@@ -1056,11 +1056,11 @@
   "team": "ATL"
  },
  "elliske01": {
-  "fga": 58,
-  "fta": 7,
-  "g": 15,
+  "fga": 63,
+  "fta": 9,
+  "g": 16,
   "name": "Keon Ellis",
-  "pts": 67,
+  "pts": 74,
   "team": "BRK"
  },
  "embiijo01": {
@@ -1080,11 +1080,11 @@
   "team": "CLE"
  },
  "essenno01": {
-  "fga": 66,
+  "fga": 69,
   "fta": 32,
-  "g": 16,
+  "g": 17,
   "name": "Noa Essengue",
-  "pts": 84,
+  "pts": 89,
   "team": "CHI"
  },
  "evansis01": {
@@ -1152,9 +1152,9 @@
   "team": "PHO"
  },
  "fontesi01": {
-  "fga": 34,
+  "fga": 36,
   "fta": 7,
-  "g": 10,
+  "g": 11,
   "name": "Simone Fontecchio",
   "pts": 40,
   "team": "MIA"
@@ -1178,17 +1178,17 @@
  "gardnmy01": {
   "fga": 23,
   "fta": 7,
-  "g": 10,
+  "g": 11,
   "name": "Myron Gardner",
   "pts": 31,
   "team": "MIA"
  },
  "garlada01": {
-  "fga": 250,
+  "fga": 262,
   "fta": 75,
-  "g": 16,
+  "g": 17,
   "name": "Darius Garland",
-  "pts": 340,
+  "pts": 352,
   "team": "LAC"
  },
  "garzalu01": {
@@ -1224,19 +1224,19 @@
   "team": "BOS"
  },
  "giddejo01": {
-  "fga": 164,
-  "fta": 30,
-  "g": 17,
+  "fga": 175,
+  "fta": 32,
+  "g": 18,
   "name": "Josh Giddey",
-  "pts": 176,
+  "pts": 188,
   "team": "CHI"
  },
  "gilgesh01": {
-  "fga": 403,
-  "fta": 142,
-  "g": 17,
+  "fga": 429,
+  "fta": 149,
+  "g": 18,
   "name": "Shai Gilgeous-Alexander",
-  "pts": 545,
+  "pts": 577,
   "team": "OKC"
  },
  "gillan01": {
@@ -1248,27 +1248,27 @@
   "team": "WAS"
  },
  "gilleco01": {
-  "fga": 139,
-  "fta": 16,
-  "g": 16,
+  "fga": 146,
+  "fta": 17,
+  "g": 17,
   "name": "Collin Gillespie",
-  "pts": 164,
+  "pts": 169,
   "team": "PHO"
  },
  "gilleja02": {
-  "fga": 7,
+  "fga": 9,
   "fta": 0,
-  "g": 3,
+  "g": 4,
   "name": "Ja'Kobi Gillespie",
   "pts": 8,
   "team": "SAS"
  },
  "goberru01": {
-  "fga": 94,
-  "fta": 80,
-  "g": 17,
+  "fga": 100,
+  "fta": 86,
+  "g": 18,
   "name": "Rudy Gobert",
-  "pts": 129,
+  "pts": 138,
   "team": "MIN"
  },
  "gonzahu01": {
@@ -1280,11 +1280,11 @@
   "team": "BOS"
  },
  "goodwjo01": {
-  "fga": 84,
-  "fta": 9,
-  "g": 12,
+  "fga": 91,
+  "fta": 12,
+  "g": 13,
   "name": "Jordan Goodwin",
-  "pts": 101,
+  "pts": 112,
   "team": "PHO"
  },
  "gordoaa01": {
@@ -1312,19 +1312,19 @@
   "team": "TOR"
  },
  "greenaj01": {
-  "fga": 72,
+  "fga": 75,
   "fta": 5,
-  "g": 17,
+  "g": 18,
   "name": "A.J. Green",
   "pts": 98,
   "team": "MIL"
  },
  "greendr01": {
-  "fga": 48,
+  "fga": 53,
   "fta": 6,
-  "g": 14,
+  "g": 15,
   "name": "Draymond Green",
-  "pts": 50,
+  "pts": 56,
   "team": "GSW"
  },
  "greenja02": {
@@ -1336,11 +1336,11 @@
   "team": "DET"
  },
  "greenja05": {
-  "fga": 182,
+  "fga": 203,
   "fta": 48,
-  "g": 16,
+  "g": 17,
   "name": "Jalen Green",
-  "pts": 212,
+  "pts": 228,
   "team": "PHO"
  },
  "greenjo02": {
@@ -1360,11 +1360,11 @@
   "team": "LAL"
  },
  "hachiru01": {
-  "fga": 165,
-  "fta": 38,
-  "g": 14,
+  "fga": 178,
+  "fta": 43,
+  "g": 15,
   "name": "Rui Hachimura",
-  "pts": 201,
+  "pts": 215,
   "team": "LAC"
  },
  "halibty01": {
@@ -1392,11 +1392,11 @@
   "team": "MIA"
  },
  "hardeja01": {
-  "fga": 219,
-  "fta": 99,
-  "g": 17,
+  "fga": 238,
+  "fta": 113,
+  "g": 18,
   "name": "James Harden",
-  "pts": 315,
+  "pts": 343,
   "team": "CLE"
  },
  "hardyja02": {
@@ -1432,19 +1432,19 @@
   "team": "BOS"
  },
  "harteis01": {
-  "fga": 119,
+  "fga": 126,
   "fta": 29,
-  "g": 18,
+  "g": 19,
   "name": "Isaiah Hartenstein",
-  "pts": 151,
+  "pts": 159,
   "team": "OKC"
  },
  "hartjo01": {
-  "fga": 106,
-  "fta": 5,
-  "g": 14,
+  "fga": 120,
+  "fta": 8,
+  "g": 15,
   "name": "Josh Hart",
-  "pts": 92,
+  "pts": 107,
   "team": "NYK"
  },
  "hausesa01": {
@@ -1456,11 +1456,11 @@
   "team": "BOS"
  },
  "hawkijo01": {
-  "fga": 45,
-  "fta": 4,
-  "g": 9,
+  "fga": 51,
+  "fta": 5,
+  "g": 10,
   "name": "Jordan Hawkins",
-  "pts": 49,
+  "pts": 59,
   "team": "CHI"
  },
  "hayesja02": {
@@ -1472,51 +1472,51 @@
   "team": "UTA"
  },
  "hendesc01": {
-  "fga": 155,
-  "fta": 52,
-  "g": 17,
+  "fga": 164,
+  "fta": 56,
+  "g": 18,
   "name": "Scoot Henderson",
-  "pts": 169,
+  "pts": 179,
   "team": "POR"
  },
  "hendrta01": {
-  "fga": 67,
-  "fta": 26,
-  "g": 13,
+  "fga": 71,
+  "fta": 27,
+  "g": 14,
   "name": "Taylor Hendricks",
-  "pts": 104,
+  "pts": 109,
   "team": "MEM"
  },
  "herroty01": {
-  "fga": 276,
-  "fta": 83,
-  "g": 17,
+  "fga": 296,
+  "fta": 88,
+  "g": 18,
   "name": "Tyler Herro",
-  "pts": 373,
+  "pts": 401,
   "team": "MIL"
  },
  "hezonma01": {
-  "fga": 137,
+  "fga": 138,
   "fta": 10,
-  "g": 18,
+  "g": 19,
   "name": "Mario Hezonja",
   "pts": 159,
   "team": "CLE"
  },
  "hieldbu01": {
-  "fga": 117,
+  "fga": 124,
   "fta": 4,
-  "g": 15,
+  "g": 16,
   "name": "Buddy Hield",
-  "pts": 155,
+  "pts": 164,
   "team": "CHI"
  },
  "holidjr01": {
-  "fga": 170,
+  "fga": 184,
   "fta": 41,
-  "g": 17,
+  "g": 18,
   "name": "Jrue Holiday",
-  "pts": 239,
+  "pts": 250,
   "team": "POR"
  },
  "hollaro01": {
@@ -1552,11 +1552,11 @@
   "team": "DEN"
  },
  "horfoal01": {
-  "fga": 66,
+  "fga": 69,
   "fta": 2,
-  "g": 14,
+  "g": 15,
   "name": "Al Horford",
-  "pts": 57,
+  "pts": 59,
   "team": "GSW"
  },
  "howarje01": {
@@ -1584,27 +1584,27 @@
   "team": "IND"
  },
  "huntede01": {
-  "fga": 168,
-  "fta": 51,
-  "g": 15,
+  "fga": 178,
+  "fta": 55,
+  "g": 16,
   "name": "De'Andre Hunter",
-  "pts": 229,
+  "pts": 244,
   "team": "SAC"
  },
  "hylanbo01": {
-  "fga": 130,
+  "fga": 140,
   "fta": 29,
-  "g": 18,
+  "g": 19,
   "name": "Bones Hyland",
-  "pts": 175,
+  "pts": 184,
   "team": "MIN"
  },
  "ighodos01": {
-  "fga": 60,
-  "fta": 32,
-  "g": 14,
+  "fga": 68,
+  "fta": 35,
+  "g": 15,
   "name": "Oso Ighodaro",
-  "pts": 83,
+  "pts": 96,
   "team": "PHO"
  },
  "ikegr01": {
@@ -1616,11 +1616,11 @@
   "team": "GSW"
  },
  "ingrabr01": {
-  "fga": 18,
-  "fta": 5,
-  "g": 1,
+  "fga": 37,
+  "fta": 9,
+  "g": 2,
   "name": "Brandon Ingram",
-  "pts": 16,
+  "pts": 34,
   "team": "LAC"
  },
  "ingraha01": {
@@ -1648,11 +1648,11 @@
   "team": "MEM"
  },
  "jacksis01": {
-  "fga": 84,
+  "fga": 86,
   "fta": 21,
-  "g": 15,
+  "g": 16,
   "name": "Isaiah Jackson",
-  "pts": 111,
+  "pts": 115,
   "team": "LAC"
  },
  "jacksja02": {
@@ -1680,11 +1680,11 @@
   "team": "TOR"
  },
  "jakucka01": {
-  "fga": 100,
+  "fga": 107,
   "fta": 42,
-  "g": 17,
+  "g": 18,
   "name": "Kasparas Jakučionis",
-  "pts": 144,
+  "pts": 148,
   "team": "MIL"
  },
  "jamesbr02": {
@@ -1696,27 +1696,27 @@
   "team": "LAL"
  },
  "jamesle01": {
-  "fga": 183,
-  "fta": 59,
-  "g": 14,
+  "fga": 198,
+  "fta": 62,
+  "g": 15,
   "name": "LeBron James",
-  "pts": 232,
+  "pts": 257,
   "team": "PHI"
  },
  "jamessi01": {
-  "fga": 99,
+  "fga": 105,
   "fta": 14,
-  "g": 16,
+  "g": 17,
   "name": "Sion James",
-  "pts": 92,
+  "pts": 97,
   "team": "CHO"
  },
  "jaqueja01": {
-  "fga": 199,
-  "fta": 52,
-  "g": 18,
+  "fga": 214,
+  "fta": 56,
+  "g": 19,
   "name": "Jaime Jaquez Jr.",
-  "pts": 252,
+  "pts": 273,
   "team": "MIL"
  },
  "jeffejo01": {
@@ -1736,11 +1736,11 @@
   "team": "DET"
  },
  "jeromty01": {
-  "fga": 240,
-  "fta": 64,
-  "g": 13,
+  "fga": 256,
+  "fta": 66,
+  "g": 14,
   "name": "Ty Jerome",
-  "pts": 326,
+  "pts": 343,
   "team": "MEM"
  },
  "joeis01": {
@@ -1784,11 +1784,11 @@
   "team": "ATL"
  },
  "johnske04": {
-  "fga": 129,
-  "fta": 47,
-  "g": 18,
+  "fga": 132,
+  "fta": 51,
+  "g": 19,
   "name": "Keldon Johnson",
-  "pts": 161,
+  "pts": 164,
   "team": "SAS"
  },
  "johnske10": {
@@ -1832,11 +1832,11 @@
   "team": "SAS"
  },
  "jonesde02": {
-  "fga": 111,
+  "fga": 117,
   "fta": 29,
-  "g": 15,
+  "g": 16,
   "name": "Derrick Jones Jr.",
-  "pts": 151,
+  "pts": 155,
   "team": "LAC"
  },
  "joneshe01": {
@@ -1864,11 +1864,11 @@
   "team": "DEN"
  },
  "jonestr01": {
-  "fga": 137,
-  "fta": 59,
-  "g": 17,
+  "fga": 145,
+  "fta": 64,
+  "g": 18,
   "name": "Tre Jones",
-  "pts": 189,
+  "pts": 199,
   "team": "CHI"
  },
  "jonesty01": {
@@ -1906,23 +1906,23 @@
  "karabal01": {
   "fga": 11,
   "fta": 2,
-  "g": 8,
+  "g": 9,
   "name": "Alex Karaban",
   "pts": 7,
   "team": "SAC"
  },
  "kennalu01": {
-  "fga": 90,
-  "fta": 10,
-  "g": 15,
+  "fga": 95,
+  "fta": 11,
+  "g": 16,
   "name": "Luke Kennard",
-  "pts": 125,
+  "pts": 133,
   "team": "PHO"
  },
  "kentja01": {
-  "fga": 31,
-  "fta": 1,
-  "g": 8,
+  "fga": 33,
+  "fta": 3,
+  "g": 9,
   "name": "Jayson Kent",
   "pts": 34,
   "team": "POR"
@@ -1960,27 +1960,27 @@
   "team": "CHO"
  },
  "kolekty01": {
-  "fga": 56,
+  "fga": 57,
   "fta": 9,
-  "g": 15,
+  "g": 16,
   "name": "Tyler Kolek",
   "pts": 61,
   "team": "NYK"
  },
  "konanya01": {
-  "fga": 9,
+  "fga": 13,
   "fta": 2,
-  "g": 3,
+  "g": 4,
   "name": "Yanic Konan Niederhäuser",
-  "pts": 10,
+  "pts": 14,
   "team": "LAC"
  },
  "kornelu01": {
-  "fga": 50,
-  "fta": 23,
-  "g": 18,
+  "fga": 51,
+  "fta": 25,
+  "g": 19,
   "name": "Luke Kornet",
-  "pts": 73,
+  "pts": 77,
   "team": "SAS"
  },
  "krejcvi01": {
@@ -1992,19 +1992,19 @@
   "team": "POR"
  },
  "kuminjo01": {
-  "fga": 177,
-  "fta": 61,
-  "g": 17,
+  "fga": 185,
+  "fta": 63,
+  "g": 18,
   "name": "Jonathan Kuminga",
-  "pts": 227,
+  "pts": 234,
   "team": "MIN"
  },
  "kuzmaky01": {
-  "fga": 176,
-  "fta": 46,
-  "g": 17,
+  "fga": 187,
+  "fta": 48,
+  "g": 18,
   "name": "Kyle Kuzma",
-  "pts": 214,
+  "pts": 227,
   "team": "MIL"
  },
  "landajo01": {
@@ -2032,11 +2032,11 @@
   "team": "LAL"
  },
  "larsspe01": {
-  "fga": 93,
-  "fta": 44,
-  "g": 13,
+  "fga": 100,
+  "fta": 46,
+  "g": 14,
   "name": "Pelle Larsson",
-  "pts": 150,
+  "pts": 158,
   "team": "MIA"
  },
  "lavinza01": {
@@ -2056,11 +2056,11 @@
   "team": "DAL"
  },
  "lendeya01": {
-  "fga": 248,
-  "fta": 92,
-  "g": 17,
+  "fga": 259,
+  "fta": 96,
+  "g": 18,
   "name": "Yaxel Lendeborg",
-  "pts": 327,
+  "pts": 342,
   "team": "GSW"
  },
  "leonaka01": {
@@ -2080,19 +2080,19 @@
   "team": "GSW"
  },
  "leverca01": {
-  "fga": 11,
+  "fga": 13,
   "fta": 2,
-  "g": 4,
+  "g": 5,
   "name": "Caris LeVert",
-  "pts": 11,
+  "pts": 13,
   "team": "MIL"
  },
  "lillada01": {
-  "fga": 251,
-  "fta": 109,
-  "g": 17,
+  "fga": 271,
+  "fta": 119,
+  "g": 18,
   "name": "Damian Lillard",
-  "pts": 347,
+  "pts": 376,
   "team": "POR"
  },
  "looneke01": {
@@ -2104,19 +2104,19 @@
   "team": "LAL"
  },
  "lopezbr01": {
-  "fga": 168,
-  "fta": 39,
-  "g": 16,
+  "fga": 171,
+  "fta": 40,
+  "g": 17,
   "name": "Brook Lopez",
-  "pts": 239,
+  "pts": 245,
   "team": "LAC"
  },
  "lopezka01": {
-  "fga": 4,
+  "fga": 7,
   "fta": 2,
-  "g": 6,
+  "g": 7,
   "name": "Karim López",
-  "pts": 7,
+  "pts": 9,
   "team": "MEM"
  },
  "loveca01": {
@@ -2136,19 +2136,19 @@
   "team": "LAL"
  },
  "lylestr01": {
-  "fga": 79,
+  "fga": 85,
   "fta": 31,
-  "g": 18,
+  "g": 19,
   "name": "Trey Lyles",
-  "pts": 114,
+  "pts": 123,
   "team": "MIN"
  },
  "maluakh01": {
-  "fga": 79,
-  "fta": 27,
-  "g": 16,
+  "fga": 83,
+  "fta": 33,
+  "g": 17,
   "name": "Khaman Maluach",
-  "pts": 123,
+  "pts": 135,
   "team": "PHO"
  },
  "mamuksa01": {
@@ -2160,9 +2160,9 @@
   "team": "LAL"
  },
  "mannte01": {
-  "fga": 17,
+  "fga": 18,
   "fta": 0,
-  "g": 9,
+  "g": 10,
   "name": "Terance Mann",
   "pts": 10,
   "team": "BRK"
@@ -2242,7 +2242,7 @@
  "mashaja01": {
   "fga": 11,
   "fta": 0,
-  "g": 8,
+  "g": 9,
   "name": "Jahmai Mashack",
   "pts": 5,
   "team": "MEM"
@@ -2264,11 +2264,11 @@
   "team": "NOP"
  },
  "maxeyty01": {
-  "fga": 293,
-  "fta": 121,
-  "g": 17,
+  "fga": 314,
+  "fta": 125,
+  "g": 18,
   "name": "Tyrese Maxey",
-  "pts": 437,
+  "pts": 467,
   "team": "PHI"
  },
  "mcbrimi01": {
@@ -2280,11 +2280,11 @@
   "team": "NYK"
  },
  "mccaija01": {
-  "fga": 225,
-  "fta": 37,
-  "g": 18,
+  "fga": 236,
+  "fta": 41,
+  "g": 19,
   "name": "Jared McCain",
-  "pts": 256,
+  "pts": 265,
   "team": "OKC"
  },
  "mccolcj01": {
@@ -2304,11 +2304,11 @@
   "team": "IND"
  },
  "mcdanja02": {
-  "fga": 243,
-  "fta": 39,
-  "g": 18,
+  "fga": 258,
+  "fta": 45,
+  "g": 19,
   "name": "Jaden McDaniels",
-  "pts": 332,
+  "pts": 364,
   "team": "MIN"
  },
  "mcgowbr01": {
@@ -2320,11 +2320,11 @@
   "team": "NOP"
  },
  "mclaujo01": {
-  "fga": 35,
+  "fga": 38,
   "fta": 4,
-  "g": 12,
+  "g": 13,
   "name": "Jordan McLaughlin",
-  "pts": 33,
+  "pts": 37,
   "team": "SAS"
  },
  "mcneeli01": {
@@ -2336,19 +2336,19 @@
   "team": "CHO"
  },
  "meltode01": {
-  "fga": 128,
+  "fga": 142,
   "fta": 28,
-  "g": 17,
+  "g": 18,
   "name": "De'Anthony Melton",
-  "pts": 148,
+  "pts": 172,
   "team": "GSW"
  },
  "merrisa01": {
-  "fga": 76,
+  "fga": 84,
   "fta": 20,
-  "g": 12,
+  "g": 13,
   "name": "Sam Merrill",
-  "pts": 94,
+  "pts": 99,
   "team": "CLE"
  },
  "middlkh01": {
@@ -2360,19 +2360,19 @@
   "team": "WAS"
  },
  "milleba01": {
-  "fga": 27,
-  "fta": 18,
-  "g": 14,
+  "fga": 28,
+  "fta": 26,
+  "g": 15,
   "name": "Baba Miller",
-  "pts": 47,
+  "pts": 56,
   "team": "LAC"
  },
  "millebr02": {
-  "fga": 271,
-  "fta": 48,
-  "g": 14,
+  "fga": 296,
+  "fta": 53,
+  "g": 15,
   "name": "Brandon Miller",
-  "pts": 278,
+  "pts": 313,
   "team": "CHO"
  },
  "millele01": {
@@ -2408,19 +2408,19 @@
   "team": "NOP"
  },
  "mitchaj01": {
-  "fga": 223,
-  "fta": 51,
-  "g": 16,
+  "fga": 242,
+  "fta": 54,
+  "g": 17,
   "name": "Ajay Mitchell",
-  "pts": 267,
+  "pts": 292,
   "team": "OKC"
  },
  "mitchda01": {
-  "fga": 194,
-  "fta": 46,
-  "g": 16,
+  "fga": 208,
+  "fta": 52,
+  "g": 17,
   "name": "Davion Mitchell",
-  "pts": 272,
+  "pts": 292,
   "team": "MIA"
  },
  "mitchdi01": {
@@ -2432,11 +2432,11 @@
   "team": "BOS"
  },
  "mitchdo01": {
-  "fga": 301,
-  "fta": 97,
-  "g": 17,
+  "fga": 325,
+  "fta": 105,
+  "g": 18,
   "name": "Donovan Mitchell",
-  "pts": 420,
+  "pts": 450,
   "team": "CLE"
  },
  "mobleev01": {
@@ -2456,11 +2456,11 @@
   "team": "SAC"
  },
  "monkma01": {
-  "fga": 111,
-  "fta": 28,
-  "g": 16,
+  "fga": 116,
+  "fta": 29,
+  "g": 17,
   "name": "Malik Monk",
-  "pts": 127,
+  "pts": 132,
   "team": "SAC"
  },
  "moralal01": {
@@ -2512,19 +2512,19 @@
   "team": "DEN"
  },
  "murrake02": {
-  "fga": 105,
+  "fga": 124,
   "fta": 14,
-  "g": 10,
+  "g": 11,
   "name": "Keegan Murray",
-  "pts": 111,
+  "pts": 129,
   "team": "SAC"
  },
  "murrakr01": {
-  "fga": 36,
-  "fta": 2,
-  "g": 14,
+  "fga": 44,
+  "fta": 3,
+  "g": 15,
   "name": "Kris Murray",
-  "pts": 33,
+  "pts": 41,
   "team": "MEM"
  },
  "mykhasv01": {
@@ -2552,11 +2552,11 @@
   "team": "MIL"
  },
  "nelsogr02": {
-  "fga": 1,
-  "fta": 0,
-  "g": 1,
+  "fga": 2,
+  "fta": 2,
+  "g": 2,
   "name": "Grant Nelson",
-  "pts": 2,
+  "pts": 3,
   "team": "BRK"
  },
  "nembhan01": {
@@ -2592,12 +2592,20 @@
   "team": "ATL"
  },
  "niangge01": {
-  "fga": 112,
+  "fga": 120,
   "fta": 10,
-  "g": 17,
+  "g": 18,
   "name": "Georges Niang",
-  "pts": 117,
+  "pts": 128,
   "team": "GSW"
+ },
+ "nickety01": {
+  "fga": 3,
+  "fta": 0,
+  "g": 1,
+  "name": "Tyler Nickel",
+  "pts": 5,
+  "team": "NYK"
  },
  "nnajize01": {
   "fga": 4,
@@ -2632,11 +2640,11 @@
   "team": "DET"
  },
  "okorois01": {
-  "fga": 97,
-  "fta": 44,
-  "g": 17,
+  "fga": 105,
+  "fta": 47,
+  "g": 18,
   "name": "Isaac Okoro",
-  "pts": 133,
+  "pts": 143,
   "team": "CHI"
  },
  "okparfe01": {
@@ -2656,9 +2664,9 @@
   "team": "CLE"
  },
  "onealro01": {
-  "fga": 75,
+  "fga": 78,
   "fta": 8,
-  "g": 16,
+  "g": 17,
   "name": "Royce O'Neale",
   "pts": 89,
   "team": "CHO"
@@ -2672,11 +2680,11 @@
   "team": "IND"
  },
  "paytoga02": {
-  "fga": 62,
-  "fta": 2,
-  "g": 15,
+  "fga": 68,
+  "fta": 4,
+  "g": 16,
   "name": "Gary Payton II",
-  "pts": 72,
+  "pts": 81,
   "team": "GSW"
  },
  "peatko01": {
@@ -2688,11 +2696,11 @@
   "team": "PHO"
  },
  "peavymi01": {
-  "fga": 52,
+  "fga": 55,
   "fta": 10,
-  "g": 12,
+  "g": 13,
   "name": "Micah Peavy",
-  "pts": 49,
+  "pts": 51,
   "team": "OKC"
  },
  "peterda02": {
@@ -2752,11 +2760,11 @@
   "team": "SAC"
  },
  "podzibr01": {
-  "fga": 186,
-  "fta": 50,
-  "g": 15,
+  "fga": 195,
+  "fta": 51,
+  "g": 16,
   "name": "Brandin Podziemski",
-  "pts": 239,
+  "pts": 252,
   "team": "GSW"
  },
  "poeltja01": {
@@ -2784,25 +2792,25 @@
   "team": "CLE"
  },
  "portemi01": {
-  "fga": 212,
-  "fta": 78,
-  "g": 15,
+  "fga": 226,
+  "fta": 81,
+  "g": 16,
   "name": "Michael Porter Jr.",
-  "pts": 294,
+  "pts": 306,
   "team": "BRK"
  },
  "portibo01": {
-  "fga": 123,
+  "fga": 127,
   "fta": 11,
-  "g": 16,
+  "g": 17,
   "name": "Bobby Portis",
-  "pts": 122,
+  "pts": 127,
   "team": "MIA"
  },
  "postqu01": {
-  "fga": 42,
+  "fga": 45,
   "fta": 7,
-  "g": 12,
+  "g": 13,
   "name": "Quinten Post",
   "pts": 53,
   "team": "MEM"
@@ -2848,19 +2856,19 @@
   "team": "BOS"
  },
  "proctty01": {
-  "fga": 114,
+  "fga": 120,
   "fta": 18,
-  "g": 17,
+  "g": 18,
   "name": "Tyrese Proctor",
-  "pts": 155,
+  "pts": 157,
   "team": "CLE"
  },
  "prospol01": {
-  "fga": 55,
-  "fta": 22,
-  "g": 12,
+  "fga": 60,
+  "fta": 26,
+  "g": 13,
   "name": "Olivier-Maxence Prosper",
-  "pts": 75,
+  "pts": 84,
   "team": "MEM"
  },
  "pullizy01": {
@@ -2896,11 +2904,11 @@
   "team": "TOR"
  },
  "randlju01": {
-  "fga": 241,
-  "fta": 109,
-  "g": 16,
+  "fga": 257,
+  "fta": 117,
+  "g": 17,
   "name": "Julius Randle",
-  "pts": 345,
+  "pts": 373,
   "team": "BRK"
  },
  "reathdu01": {
@@ -2944,11 +2952,11 @@
   "team": "NOP"
  },
  "reidna01": {
-  "fga": 280,
-  "fta": 44,
-  "g": 16,
+  "fga": 296,
+  "fta": 50,
+  "g": 17,
   "name": "Naz Reid",
-  "pts": 283,
+  "pts": 301,
   "team": "CHO"
  },
  "richaja02": {
@@ -2968,11 +2976,11 @@
   "team": "MIA"
  },
  "richawi02": {
-  "fga": 89,
+  "fga": 91,
   "fta": 16,
-  "g": 16,
+  "g": 17,
   "name": "Will Richard",
-  "pts": 116,
+  "pts": 119,
   "team": "GSW"
  },
  "rileywi01": {
@@ -3008,11 +3016,11 @@
   "team": "BOS"
  },
  "rolliry01": {
-  "fga": 159,
-  "fta": 26,
-  "g": 16,
+  "fga": 166,
+  "fta": 28,
+  "g": 17,
   "name": "Ryan Rollins",
-  "pts": 166,
+  "pts": 168,
   "team": "MIL"
  },
  "ruperra01": {
@@ -3024,35 +3032,35 @@
   "team": "PHI"
  },
  "sabondo01": {
-  "fga": 144,
-  "fta": 59,
-  "g": 16,
+  "fga": 153,
+  "fta": 71,
+  "g": 17,
   "name": "Domantas Sabonis",
-  "pts": 232,
+  "pts": 259,
   "team": "SAC"
  },
  "salauti01": {
-  "fga": 61,
-  "fta": 13,
-  "g": 15,
+  "fga": 64,
+  "fta": 15,
+  "g": 16,
   "name": "Tidjane Salaün",
-  "pts": 75,
+  "pts": 79,
   "team": "CHO"
  },
  "sandeko01": {
-  "fga": 104,
+  "fga": 106,
   "fta": 18,
-  "g": 16,
+  "g": 17,
   "name": "Kobe Sanders",
   "pts": 125,
   "team": "LAC"
  },
  "santogu01": {
-  "fga": 76,
-  "fta": 37,
-  "g": 14,
+  "fga": 87,
+  "fta": 41,
+  "g": 15,
   "name": "Gui Santos",
-  "pts": 95,
+  "pts": 117,
   "team": "GSW"
  },
  "sarafbe01": {
@@ -3104,11 +3112,11 @@
   "team": "CHI"
  },
  "sengual01": {
-  "fga": 236,
-  "fta": 102,
-  "g": 16,
+  "fga": 253,
+  "fta": 108,
+  "g": 17,
   "name": "Alperen Şengün",
-  "pts": 351,
+  "pts": 374,
   "team": "HOU"
  },
  "sensabr01": {
@@ -3128,35 +3136,35 @@
   "team": "LAL"
  },
  "shamela01": {
-  "fga": 136,
-  "fta": 21,
-  "g": 17,
+  "fga": 139,
+  "fta": 23,
+  "g": 18,
   "name": "Landry Shamet",
-  "pts": 193,
+  "pts": 204,
   "team": "NYK"
  },
  "shannte01": {
-  "fga": 132,
-  "fta": 61,
-  "g": 15,
+  "fga": 142,
+  "fta": 65,
+  "g": 16,
   "name": "Terrence Shannon Jr.",
-  "pts": 197,
+  "pts": 205,
   "team": "MIN"
  },
  "sharpda01": {
-  "fga": 99,
+  "fga": 109,
   "fta": 39,
-  "g": 16,
+  "g": 17,
   "name": "Day'Ron Sharpe",
-  "pts": 141,
+  "pts": 152,
   "team": "BRK"
  },
  "sharpem01": {
-  "fga": 81,
+  "fga": 87,
   "fta": 5,
-  "g": 17,
+  "g": 18,
   "name": "Emanuel Sharp",
-  "pts": 76,
+  "pts": 85,
   "team": "SAC"
  },
  "sheadja01": {
@@ -3176,11 +3184,11 @@
   "team": "IND"
  },
  "sheppre01": {
-  "fga": 128,
+  "fga": 134,
   "fta": 5,
-  "g": 15,
+  "g": 16,
   "name": "Reed Sheppard",
-  "pts": 132,
+  "pts": 139,
   "team": "HOU"
  },
  "siakapa01": {
@@ -3192,11 +3200,11 @@
   "team": "IND"
  },
  "simonan01": {
-  "fga": 152,
+  "fga": 158,
   "fta": 19,
-  "g": 18,
+  "g": 19,
   "name": "Anfernee Simons",
-  "pts": 193,
+  "pts": 199,
   "team": "PHI"
  },
  "simsje01": {
@@ -3216,19 +3224,19 @@
   "team": "IND"
  },
  "smallja01": {
-  "fga": 77,
-  "fta": 20,
-  "g": 10,
+  "fga": 86,
+  "fta": 22,
+  "g": 11,
   "name": "Javon Small",
-  "pts": 89,
+  "pts": 97,
   "team": "MEM"
  },
  "smartma01": {
-  "fga": 74,
+  "fga": 80,
   "fta": 13,
-  "g": 12,
+  "g": 13,
   "name": "Marcus Smart",
-  "pts": 86,
+  "pts": 90,
   "team": "HOU"
  },
  "smithbr01": {
@@ -3256,11 +3264,11 @@
   "team": "CHI"
  },
  "smithja05": {
-  "fga": 210,
-  "fta": 44,
-  "g": 18,
+  "fga": 219,
+  "fta": 49,
+  "g": 19,
   "name": "Jabari Smith Jr.",
-  "pts": 279,
+  "pts": 292,
   "team": "HOU"
  },
  "smithma02": {
@@ -3280,11 +3288,11 @@
   "team": "DET"
  },
  "spencca01": {
-  "fga": 127,
+  "fga": 137,
   "fta": 36,
-  "g": 18,
+  "g": 19,
   "name": "Cam Spencer",
-  "pts": 213,
+  "pts": 229,
   "team": "MEM"
  },
  "spencpa01": {
@@ -3296,33 +3304,33 @@
   "team": "PHO"
  },
  "steinha02": {
-  "fga": 18,
-  "fta": 3,
-  "g": 6,
+  "fga": 19,
+  "fta": 5,
+  "g": 7,
   "name": "Hannes Steinbach",
-  "pts": 17,
+  "pts": 20,
   "team": "CHO"
  },
  "stewais01": {
-  "fga": 95,
+  "fga": 101,
   "fta": 17,
-  "g": 13,
+  "g": 14,
   "name": "Isaiah Stewart",
-  "pts": 138,
+  "pts": 148,
   "team": "MEM"
  },
  "stirtbe01": {
-  "fga": 109,
-  "fta": 14,
-  "g": 18,
+  "fga": 115,
+  "fta": 16,
+  "g": 19,
   "name": "Bennett Stirtz",
-  "pts": 150,
+  "pts": 156,
   "team": "OKC"
  },
  "strusma01": {
-  "fga": 77,
+  "fga": 82,
   "fta": 12,
-  "g": 10,
+  "g": 11,
   "name": "Max Strus",
   "pts": 90,
   "team": "LAC"
@@ -3376,19 +3384,19 @@
   "team": "LAL"
  },
  "thomame01": {
-  "fga": 159,
+  "fga": 165,
   "fta": 9,
-  "g": 15,
+  "g": 16,
   "name": "Meleek Thomas",
-  "pts": 191,
+  "pts": 199,
   "team": "CLE"
  },
  "thompam01": {
-  "fga": 192,
-  "fta": 74,
-  "g": 17,
+  "fga": 206,
+  "fta": 83,
+  "g": 18,
   "name": "Amen Thompson",
-  "pts": 278,
+  "pts": 296,
   "team": "HOU"
  },
  "thompau01": {
@@ -3400,11 +3408,11 @@
   "team": "DET"
  },
  "thompkl01": {
-  "fga": 172,
+  "fga": 184,
   "fta": 11,
-  "g": 15,
+  "g": 16,
   "name": "Klay Thompson",
-  "pts": 223,
+  "pts": 230,
   "team": "MIA"
  },
  "thornbr01": {
@@ -3448,11 +3456,11 @@
   "team": "IND"
  },
  "townska01": {
-  "fga": 232,
-  "fta": 83,
-  "g": 16,
+  "fga": 240,
+  "fta": 87,
+  "g": 17,
   "name": "Karl-Anthony Towns",
-  "pts": 349,
+  "pts": 361,
   "team": "NYK"
  },
  "traorno01": {
@@ -3480,19 +3488,19 @@
   "team": "HOU"
  },
  "turnemy01": {
-  "fga": 125,
+  "fga": 127,
   "fta": 14,
-  "g": 16,
+  "g": 17,
   "name": "Myles Turner",
-  "pts": 132,
+  "pts": 135,
   "team": "MIL"
  },
  "tysonja01": {
-  "fga": 71,
+  "fga": 79,
   "fta": 9,
-  "g": 9,
+  "g": 10,
   "name": "Jaylon Tyson",
-  "pts": 76,
+  "pts": 82,
   "team": "CLE"
  },
  "vandeja01": {
@@ -3504,19 +3512,19 @@
   "team": "LAL"
  },
  "vanvlfr01": {
-  "fga": 168,
+  "fga": 180,
   "fta": 27,
-  "g": 15,
+  "g": 16,
   "name": "Fred VanVleet",
-  "pts": 208,
+  "pts": 221,
   "team": "HOU"
  },
  "vassede01": {
-  "fga": 157,
-  "fta": 38,
-  "g": 16,
+  "fga": 173,
+  "fta": 42,
+  "g": 17,
   "name": "Devin Vassell",
-  "pts": 185,
+  "pts": 203,
   "team": "SAS"
  },
  "vincega01": {
@@ -3536,19 +3544,19 @@
   "team": "ORL"
  },
  "wadede01": {
-  "fga": 53,
-  "fta": 11,
-  "g": 14,
+  "fga": 59,
+  "fta": 13,
+  "g": 15,
   "name": "Dean Wade",
-  "pts": 65,
+  "pts": 70,
   "team": "PHI"
  },
  "wagleke01": {
-  "fga": 131,
-  "fta": 75,
-  "g": 16,
+  "fga": 137,
+  "fta": 83,
+  "g": 17,
   "name": "Keaton Wagler",
-  "pts": 179,
+  "pts": 191,
   "team": "LAC"
  },
  "wagnefr01": {
@@ -3560,19 +3568,19 @@
   "team": "ORL"
  },
  "wagnemo01": {
-  "fga": 92,
-  "fta": 38,
-  "g": 16,
+  "fga": 93,
+  "fta": 40,
+  "g": 17,
   "name": "Moritz Wagner",
-  "pts": 159,
+  "pts": 161,
   "team": "BRK"
  },
  "walkeja01": {
-  "fga": 69,
+  "fga": 72,
   "fta": 22,
-  "g": 14,
+  "g": 15,
   "name": "Jabari Walker",
-  "pts": 96,
+  "pts": 103,
   "team": "PHI"
  },
  "walkeja02": {
@@ -3608,11 +3616,11 @@
   "team": "TOR"
  },
  "wareke01": {
-  "fga": 137,
-  "fta": 31,
-  "g": 18,
+  "fga": 147,
+  "fta": 32,
+  "g": 19,
   "name": "Kel'el Ware",
-  "pts": 157,
+  "pts": 170,
   "team": "MIL"
  },
  "washipj01": {
@@ -3632,27 +3640,27 @@
   "team": "NOP"
  },
  "watsope01": {
-  "fga": 144,
-  "fta": 32,
-  "g": 14,
+  "fga": 148,
+  "fta": 36,
+  "g": 15,
   "name": "Peyton Watson",
-  "pts": 151,
+  "pts": 159,
   "team": "CLE"
  },
  "wellsja01": {
-  "fga": 139,
+  "fga": 151,
   "fta": 30,
-  "g": 18,
+  "g": 19,
   "name": "Jaylen Wells",
-  "pts": 199,
+  "pts": 218,
   "team": "MEM"
  },
  "wembavi01": {
-  "fga": 353,
-  "fta": 116,
-  "g": 17,
+  "fga": 383,
+  "fta": 126,
+  "g": 18,
   "name": "Victor Wembanyama",
-  "pts": 508,
+  "pts": 552,
   "team": "SAS"
  },
  "weslebl01": {
@@ -3664,11 +3672,11 @@
   "team": "LAC"
  },
  "whiteco01": {
-  "fga": 114,
-  "fta": 27,
-  "g": 9,
+  "fga": 127,
+  "fta": 32,
+  "g": 10,
   "name": "Coby White",
-  "pts": 121,
+  "pts": 132,
   "team": "CHO"
  },
  "whitede01": {
@@ -3696,19 +3704,19 @@
   "team": "ATL"
  },
  "wiggian01": {
-  "fga": 122,
+  "fga": 128,
   "fta": 24,
-  "g": 16,
+  "g": 17,
   "name": "Andrew Wiggins",
-  "pts": 147,
+  "pts": 155,
   "team": "MIA"
  },
  "willibr03": {
-  "fga": 80,
-  "fta": 36,
-  "g": 10,
+  "fga": 94,
+  "fta": 37,
+  "g": 11,
   "name": "Brandon Williams",
-  "pts": 104,
+  "pts": 118,
   "team": "GSW"
  },
  "willico04": {
@@ -3720,9 +3728,9 @@
   "team": "MIN"
  },
  "willigr01": {
-  "fga": 28,
+  "fga": 30,
   "fta": 3,
-  "g": 3,
+  "g": 4,
   "name": "Grant Williams",
   "pts": 34,
   "team": "CHO"
@@ -3744,27 +3752,27 @@
   "team": "OKC"
  },
  "willike04": {
-  "fga": 117,
-  "fta": 15,
-  "g": 18,
+  "fga": 125,
+  "fta": 17,
+  "g": 19,
   "name": "Kenrich Williams",
-  "pts": 148,
+  "pts": 161,
   "team": "OKC"
  },
  "willipa01": {
-  "fga": 53,
+  "fga": 61,
   "fta": 11,
-  "g": 10,
+  "g": 11,
   "name": "Patrick Williams",
-  "pts": 64,
+  "pts": 75,
   "team": "CHI"
  },
  "williro04": {
-  "fga": 55,
-  "fta": 16,
-  "g": 14,
+  "fga": 57,
+  "fta": 17,
+  "g": 15,
   "name": "Robert Williams",
-  "pts": 88,
+  "pts": 92,
   "team": "POR"
  },
  "willizi01": {
@@ -3792,25 +3800,25 @@
   "team": "CHI"
  },
  "wisemja01": {
-  "fga": 13,
+  "fga": 18,
   "fta": 2,
-  "g": 7,
+  "g": 8,
   "name": "James Wiseman",
-  "pts": 13,
+  "pts": 19,
   "team": "NYK"
  },
  "wolfda01": {
-  "fga": 77,
+  "fga": 85,
   "fta": 25,
-  "g": 11,
+  "g": 12,
   "name": "Danny Wolf",
-  "pts": 113,
+  "pts": 118,
   "team": "BRK"
  },
  "yangha01": {
-  "fga": 21,
+  "fga": 22,
   "fta": 10,
-  "g": 10,
+  "g": 11,
   "name": "Yang Hansen",
   "pts": 32,
   "team": "POR"
